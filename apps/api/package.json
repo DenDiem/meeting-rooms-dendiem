@@ -8,7 +8,9 @@
     "dev": "prisma generate && nest start --watch",
     "build": "prisma generate && nest build",
     "start": "node dist/main.js",
-    "typecheck": "tsc -p tsconfig.json"
+    "typecheck": "tsc -p tsconfig.json",
+    "db:migrate": "prisma migrate dev",
+    "db:deploy": "prisma migrate deploy"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.28",
