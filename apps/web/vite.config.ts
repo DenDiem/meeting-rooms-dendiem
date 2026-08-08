@@ -11,6 +11,15 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [react()],
+    resolve: {
+      alias: {
+        '@app': resolve(process.cwd(), 'src/app'),
+        '@modules': resolve(process.cwd(), 'src/modules'),
+        '@store': resolve(process.cwd(), 'src/store'),
+        '@components': resolve(process.cwd(), 'src/_components'),
+        '@domain': resolve(process.cwd(), 'src/_domain'),
+      },
+    },
     server: {
       port: Number(env['WEB_PORT'] ?? DEFAULT_WEB_PORT),
       proxy: {
