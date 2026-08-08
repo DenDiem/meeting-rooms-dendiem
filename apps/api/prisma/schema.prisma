@@ -31,3 +31,10 @@ model Session {
 
   @@index([userId])
 }
+
+model Room {
+  id       String @id @default(uuid()) @db.Uuid
+  name     String @unique @db.VarChar(80)
+  floor    Int    @db.SmallInt
+  capacity Int    @db.SmallInt
+}
