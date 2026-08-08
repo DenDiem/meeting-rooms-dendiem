@@ -17,5 +17,33 @@ services:
       timeout: 5s
       retries: 10
 
+  api:
+    build:
+      context: .
+      dockerfile: docker/api.Dockerfile
+    container_name: meeting-rooms-api
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      API_PORT: 3000
+      SESSION_COOKIE_NAME: ${SESSION_COOKIE_NAME}
+      SESSION_COOKIE_SECURE: ${SESSION_COOKIE_SECURE}
+      SESSION_TTL_DAYS: ${SESSION_TTL_DAYS}
+    command: sh -c "npm run db:deploy -w @meeting-rooms/api && npm run start -w @meeting-rooms/api"
+
+  web:
+    build:
+      context: .
+      dockerfile: docker/web.Dockerfile
+    container_name: meeting-rooms-web
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - '${WEB_PORT}:80'
+
 volumes:
   db-data:
