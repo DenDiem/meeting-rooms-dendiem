@@ -32,6 +32,9 @@ services:
       SESSION_COOKIE_NAME: ${SESSION_COOKIE_NAME}
       SESSION_COOKIE_SECURE: ${SESSION_COOKIE_SECURE}
       SESSION_TTL_DAYS: ${SESSION_TTL_DAYS}
+      OFFICE_TIMEZONE: ${OFFICE_TIMEZONE}
+      OFFICE_OPEN_HOUR: ${OFFICE_OPEN_HOUR}
+      OFFICE_CLOSE_HOUR: ${OFFICE_CLOSE_HOUR}
     command: sh -c "npm run db:deploy -w @meeting-rooms/api && npm run start -w @meeting-rooms/api"
 
   web:

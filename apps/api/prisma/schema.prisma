@@ -16,6 +16,7 @@ model User {
   passwordHash    String
   createdAt       DateTime @default(now()) @db.Timestamptz(3)
 
+  bookings Booking[]
   sessions Session[]
 }
 
@@ -37,4 +38,23 @@ model Room {
   name     String @unique @db.VarChar(80)
   floor    Int    @db.SmallInt
   capacity Int    @db.SmallInt
+
+  bookings Booking[]
+}
+
+model Booking {
+  id         String    @id @default(uuid()) @db.Uuid
+  roomId     String    @db.Uuid
+  userId     String    @db.Uuid
+  title      String    @db.VarChar(100)
+  startsAt   DateTime  @db.Timestamptz(3)
+  endsAt     DateTime  @db.Timestamptz(3)
+  canceledAt DateTime? @db.Timestamptz(3)
+  createdAt  DateTime  @default(now()) @db.Timestamptz(3)
+
+  room Room @relation(fields: [roomId], references: [id], onDelete: Restrict)
+  user User @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  @@index([roomId, startsAt])
+  @@index([userId, startsAt])
 }
