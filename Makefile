@@ -1,4 +1,4 @@
-.PHONY: up down restart db logs ps migrate reset install dev check
+.PHONY: up down restart db logs ps migrate seed reset install dev check
 
 up:
 	docker compose up -d --build
@@ -19,6 +19,9 @@ ps:
 
 migrate:
 	docker compose exec api npm run db:deploy -w @meeting-rooms/api
+
+seed:
+	docker compose exec api npm run db:seed -w @meeting-rooms/api
 
 reset:
 	docker compose down -v

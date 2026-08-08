@@ -10,7 +10,8 @@
     "start": "node dist/main.js",
     "typecheck": "tsc -p tsconfig.json",
     "db:migrate": "prisma migrate dev",
-    "db:deploy": "prisma migrate deploy"
+    "db:deploy": "prisma migrate deploy",
+    "db:seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.28",
@@ -35,6 +36,7 @@
     "concurrently": "^10.0.4",
     "dotenv": "^17.4.2",
     "prisma": "^7.9.1",
-    "tsc-alias": "^1.9.1"
+    "tsc-alias": "^1.9.1",
+    "tsx": "^4.23.8"
   }
 }
