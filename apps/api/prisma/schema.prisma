@@ -15,4 +15,19 @@ model User {
   emailNormalized String   @unique @db.VarChar(254)
   passwordHash    String
   createdAt       DateTime @default(now()) @db.Timestamptz(3)
+
+  sessions Session[]
+}
+
+model Session {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @db.Uuid
+  tokenHash String    @unique @db.Char(64)
+  expiresAt DateTime  @db.Timestamptz(3)
+  revokedAt DateTime? @db.Timestamptz(3)
+  createdAt DateTime  @default(now()) @db.Timestamptz(3)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }

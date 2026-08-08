@@ -5,7 +5,14 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "types": ["node"],
-    "noEmit": true
+    "noEmit": true,
+    "paths": {
+      "@common/*": ["./src/common/*"],
+      "@config/*": ["./src/config/*"],
+      "@database/*": ["./src/database/*"],
+      "@generated/*": ["./src/generated/*"],
+      "@modules/*": ["./src/modules/*"]
+    }
   },
   "include": ["src", "prisma.config.ts"]
 }
