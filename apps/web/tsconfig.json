@@ -7,7 +7,14 @@
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "types": ["vite/client"],
     "declaration": false,
-    "noEmit": true
+    "noEmit": true,
+    "paths": {
+      "@app/*": ["./src/app/*"],
+      "@modules/*": ["./src/modules/*"],
+      "@store/*": ["./src/store/*"],
+      "@components/*": ["./src/_components/*"],
+      "@domain/*": ["./src/_domain/*"]
+    }
   },
   "include": ["src", "vite.config.ts"]
 }

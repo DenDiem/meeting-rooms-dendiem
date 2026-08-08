@@ -1,0 +1,9 @@
+:root {
+  color-scheme: light dark;
+
+  --color-line: color-mix(in srgb, currentColor 18%, transparent);
+  --color-muted: color-mix(in srgb, currentColor 6%, transparent);
+  --color-danger: color-mix(in srgb, red 70%, currentColor);
+  --color-taken: color-mix(in srgb, orange 22%, transparent);
+  --color-mine: color-mix(in srgb, dodgerblue 25%, transparent);
+}
