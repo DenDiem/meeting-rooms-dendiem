@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { PrismaModule } from '@database/prisma.module';
 
 import { AuthController } from './controllers/auth.controller';
+import { SessionGuard } from './guards/session.guard';
 import { SESSION_REPOSITORY } from './interfaces/session-repository.interface';
 import { USER_REPOSITORY } from './interfaces/user-repository.interface';
 import { PrismaSessionRepository } from './repositories/prisma-session.repository';
@@ -18,9 +19,10 @@ import { SessionService } from './services/session.service';
     AuthService,
     SessionCookieService,
     SessionService,
+    SessionGuard,
     { provide: USER_REPOSITORY, useClass: PrismaUserRepository },
     { provide: SESSION_REPOSITORY, useClass: PrismaSessionRepository },
   ],
-  exports: [SessionService],
+  exports: [SessionGuard, SessionService],
 })
 export class AuthModule {}

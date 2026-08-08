@@ -1,10 +1,22 @@
-import { Body, Controller, HttpCode, HttpStatus, Post, Res } from '@nestjs/common';
-import type { Response } from 'express';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
+import type { Request, Response } from 'express';
 
 import { ZodValidationPipe } from '@common/pipes/zod-validation.pipe';
 
+import { CurrentUser } from '../decorators/current-user.decorator';
 import type { LoginDto } from '../dto/login.dto';
 import type { RegisterDto } from '../dto/register.dto';
+import { SessionGuard } from '../guards/session.guard';
 import { loginRequestSchema } from '../requests/login.request';
 import { registerRequestSchema } from '../requests/register.request';
 import type { PublicUserResource } from '../resources/public-user.resource';
@@ -43,5 +55,22 @@ export class AuthController {
     this.sessionCookieService.set(response, await this.sessionService.start(user.id));
 
     return user;
+  }
+
+  @Get('me')
+  @UseGuards(SessionGuard)
+  public me(@CurrentUser() user: PublicUserResource): PublicUserResource {
+    return user;
+  }
+
+  @Post('logout')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  public async logout(
+    @Req() request: Request,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<void> {
+    await this.sessionService.end(request);
+
+    this.sessionCookieService.clear(response);
   }
 }
