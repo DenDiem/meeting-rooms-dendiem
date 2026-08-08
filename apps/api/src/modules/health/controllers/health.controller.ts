@@ -1,6 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from '@database/prisma.service';
 
 interface HealthResponse {
   readonly status: 'ok';

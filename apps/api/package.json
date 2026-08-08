@@ -5,10 +5,12 @@
   "description": "NestJS API for the meeting room booking app",
   "license": "UNLICENSED",
   "scripts": {
-    "dev": "prisma generate && nest start --watch",
-    "build": "prisma generate && nest build",
+    "dev": "prisma generate && concurrently -k -n nest,alias -c blue,green \"nest start --watch --preserveWatchOutput\" \"tsc-alias -p tsconfig.build.json --watch\"",
+    "build": "prisma generate && nest build && tsc-alias -p tsconfig.build.json",
     "start": "node dist/main.js",
-    "typecheck": "tsc -p tsconfig.json"
+    "typecheck": "tsc -p tsconfig.json",
+    "db:migrate": "prisma migrate dev",
+    "db:deploy": "prisma migrate deploy"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.28",
@@ -17,14 +19,20 @@
     "@nestjs/platform-express": "^11.1.28",
     "@prisma/adapter-pg": "^7.9.1",
     "@prisma/client": "^7.9.1",
+    "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.7",
     "reflect-metadata": "^0.2.2",
-    "rxjs": "^7.8.2"
+    "rxjs": "^7.8.2",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@nestjs/cli": "^11.0.24",
     "@nestjs/schematics": "^11.1.0",
+    "@types/cookie-parser": "^1.4.10",
     "@types/node": "^26.1.2",
+    "concurrently": "^10.0.4",
     "dotenv": "^17.4.2",
-    "prisma": "^7.9.1"
+    "prisma": "^7.9.1",
+    "tsc-alias": "^1.9.1"
   }
 }

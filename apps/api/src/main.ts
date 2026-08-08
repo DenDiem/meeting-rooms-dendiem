@@ -1,19 +1,20 @@
 import 'reflect-metadata';
 
-import { NestFactory } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
+import { NestFactory } from '@nestjs/core';
+import cookieParser from 'cookie-parser';
 
 import { AppModule } from './app.module';
-
-const DEFAULT_PORT = 3000;
+import { DEFAULT_API_PORT } from '@config/config.constants';
 
 const bootstrap = async (): Promise<void> => {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
 
   app.setGlobalPrefix('api');
+  app.use(cookieParser());
 
-  await app.listen(Number(configService.get('API_PORT') ?? DEFAULT_PORT));
+  await app.listen(Number(configService.get('API_PORT') ?? DEFAULT_API_PORT));
 };
 
 void bootstrap();
