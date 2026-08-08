@@ -1,0 +1,12 @@
+node_modules
+**/node_modules
+**/dist
+**/build
+**/coverage
+**/src/generated
+.git
+.github
+.claude-ctx
+.env
+.env.local
+*.md
