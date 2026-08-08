@@ -1,0 +1,23 @@
+.page {
+  margin: 0 auto;
+  max-width: 80rem;
+  padding: 1.5rem;
+}
+
+.toolbar {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.weeks {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.hint {
+  font-size: 0.875rem;
+  opacity: 0.75;
+}

@@ -5,6 +5,8 @@ import { RequireSession } from '@domain/guards/require-session/RequireSession';
 import { AppLayout } from '@modules/_layout/components/app-layout/AppLayout';
 import { LoginPage } from '@modules/auth/pages/login-page/LoginPage';
 import { RegisterPage } from '@modules/auth/pages/register-page/RegisterPage';
+import { MyBookingsPage } from '@modules/bookings/my-bookings/pages/my-bookings-page/MyBookingsPage';
+import { SchedulePage } from '@modules/bookings/schedule/pages/schedule-page/SchedulePage';
 
 export const appRouter = createBrowserRouter([
   {
@@ -16,7 +18,15 @@ export const appRouter = createBrowserRouter([
   },
   {
     element: <RequireSession />,
-    children: [{ element: <AppLayout />, children: [] }],
+    children: [
+      {
+        element: <AppLayout />,
+        children: [
+          { path: '/schedule', element: <SchedulePage /> },
+          { path: '/my-bookings', element: <MyBookingsPage /> },
+        ],
+      },
+    ],
   },
-  { path: '*', element: <Navigate to="/login" replace /> },
+  { path: '*', element: <Navigate to="/schedule" replace /> },
 ]);
