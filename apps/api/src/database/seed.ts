@@ -11,10 +11,10 @@ import { SALT_ROUNDS, SEED_BOOKINGS, SEED_ROOMS, SEED_USERS } from './seed.const
 config({ path: '../../.env', quiet: true });
 
 const officeZone = process.env['OFFICE_TIMEZONE'] ?? DEFAULT_OFFICE_TIMEZONE;
-const nextMonday = DateTime.now().setZone(officeZone).startOf('week').plus({ weeks: 1 });
+const thisMonday = DateTime.now().setZone(officeZone).startOf('week');
 
 const officeTime = (dayOffset: number, hour: number): Date =>
-  nextMonday
+  thisMonday
     .plus({ days: dayOffset })
     .set({ hour: Math.floor(hour), minute: (hour % 1) * 60, second: 0, millisecond: 0 })
     .toJSDate();
@@ -56,7 +56,12 @@ const seed = async (prisma: PrismaClient): Promise<void> => {
     users.set(user.email, id);
   }
 
-  await prisma.booking.deleteMany();
+  const seededEmails = SEED_USERS.map((user) => user.email);
+
+  await prisma.booking.deleteMany({ where: { user: { emailNormalized: { in: seededEmails } } } });
+  await prisma.bookingSeries.deleteMany({
+    where: { user: { emailNormalized: { in: seededEmails } } },
+  });
 
   for (const booking of SEED_BOOKINGS) {
     const roomId = rooms.get(booking.room);
@@ -80,7 +85,7 @@ const seed = async (prisma: PrismaClient): Promise<void> => {
   console.log(
     `Seeded ${SEED_ROOMS.length} rooms, ${SEED_USERS.length} users and ${SEED_BOOKINGS.length} bookings.`,
   );
-  console.log(`Demo week starts on ${nextMonday.toISODate()} (${officeZone}).`);
+  console.log(`Demo week starts on ${thisMonday.toISODate()} (${officeZone}).`);
 };
 
 const connectionString = process.env['DATABASE_URL'];

@@ -43,7 +43,10 @@ export const SchedulePage = (): JSX.Element => {
   const week =
     searchParams.get('week') ?? (office.data === undefined ? '' : currentWeekDate(office.data));
   const roomId = searchParams.get('roomId') ?? rooms.data?.[0]?.id ?? '';
-  const schedule = useGetWeekScheduleQuery({ roomId, week }, { skip: roomId === '' });
+  const schedule = useGetWeekScheduleQuery(
+    { roomId, week },
+    { skip: roomId === '' || week === '' },
+  );
   const bookings = schedule.currentData ?? EMPTY_BOOKINGS;
   const room = rooms.data?.find((item) => item.id === roomId);
 
