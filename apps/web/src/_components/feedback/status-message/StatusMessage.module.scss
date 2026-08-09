@@ -1,7 +1,14 @@
 .status {
-  margin: 0.75rem 0;
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-m);
+  color: var(--text-secondary);
+  font: var(--body-regular-13);
+  padding: var(--space-3) var(--space-4);
 }
 
 .error {
-  color: var(--color-danger);
+  background: var(--danger-surface);
+  border-color: var(--danger-border);
+  color: var(--danger-text);
 }

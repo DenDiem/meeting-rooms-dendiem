@@ -1,0 +1,16 @@
+.mark {
+  display: block;
+  flex: none;
+}
+
+.plate {
+  fill: var(--accent-default);
+}
+
+.hand {
+  fill: none;
+  stroke: var(--surface-card);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2.75;
+}

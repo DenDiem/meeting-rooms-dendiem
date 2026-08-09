@@ -1,5 +1,7 @@
 import type { JSX } from 'react';
 
+import { classNames } from '@domain/services/class-names.service';
+
 import styles from './StatusMessage.module.scss';
 
 interface StatusMessageProps {
@@ -9,7 +11,7 @@ interface StatusMessageProps {
 
 export const StatusMessage = ({ tone, children }: StatusMessageProps): JSX.Element => (
   <p
-    className={tone === 'error' ? `${styles.status} ${styles.error}` : styles.status}
+    className={classNames(styles.status, tone === 'error' && styles.error)}
     role={tone === 'error' ? 'alert' : 'status'}
   >
     {children}
