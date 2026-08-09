@@ -1,8 +1,8 @@
 import type { JSX } from 'react';
 import { Navigate, Outlet } from 'react-router';
 
-import { PageLoader } from '@components/feedback/page-loader/PageLoader';
-import { StatusMessage } from '@components/feedback/status-message/StatusMessage';
+import { PageLoader } from '@components/page-loader/PageLoader';
+import { StatusMessage } from '@components/status-message/StatusMessage';
 import { useGetSessionQuery } from '@store/api/auth.api';
 
 export const RequireSession = (): JSX.Element => {

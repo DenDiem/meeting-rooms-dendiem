@@ -2,7 +2,7 @@ import type { JSX } from 'react';
 import { useState } from 'react';
 import { useSearchParams } from 'react-router';
 
-import { StatusMessage } from '@components/feedback/status-message/StatusMessage';
+import { StatusMessage } from '@components/status-message/StatusMessage';
 import { OFFICE_TIME_ZONE } from '@domain/models/constants/office.constants';
 import type { Booking } from '@domain/models/interfaces/booking.interface';
 import { useGetWeekScheduleQuery } from '@store/api/booking.api';

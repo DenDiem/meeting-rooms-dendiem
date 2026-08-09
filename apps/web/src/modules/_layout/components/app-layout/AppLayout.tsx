@@ -1,8 +1,8 @@
 import type { JSX } from 'react';
 import { NavLink, Outlet } from 'react-router';
 
-import { Button } from '@components/actions/button/Button';
-import { BrandMark } from '@components/branding/brand-mark/BrandMark';
+import { BrandMark } from '@components/brand-mark/BrandMark';
+import { Button } from '@components/button/Button';
 import { classNames } from '@domain/services/class-names.service';
 import { toInitials } from '@domain/services/initials.service';
 import { useGetSessionQuery, useLogoutMutation } from '@store/api/auth.api';

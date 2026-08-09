@@ -2,9 +2,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import type { JSX } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { Button } from '@components/actions/button/Button';
-import { StatusMessage } from '@components/feedback/status-message/StatusMessage';
-import { FormField } from '@components/forms/form-field/FormField';
+import { Button } from '@components/button/Button';
+import { FormField } from '@components/form-field/FormField';
+import { StatusMessage } from '@components/status-message/StatusMessage';
 import type { LoginPayload } from '@domain/models/interfaces/auth-payload.interface';
 import {
   applyFieldErrors,

@@ -1,6 +1,6 @@
 import type { JSX, ReactNode } from 'react';
 
-import { BrandMark } from '@components/branding/brand-mark/BrandMark';
+import { BrandMark } from '@components/brand-mark/BrandMark';
 
 import styles from './AuthCard.module.scss';
 
