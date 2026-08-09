@@ -1,8 +1,8 @@
 import type { JSX } from 'react';
 import { useState } from 'react';
 
-import { StatusMessage } from '@components/feedback/status-message/StatusMessage';
-import { Dialog, DialogActions } from '@components/overlay/dialog/Dialog';
+import { Dialog, DialogActions } from '@components/dialog/Dialog';
+import { StatusMessage } from '@components/status-message/StatusMessage';
 import { TITLE_MAX_LENGTH } from '@domain/models/constants/booking.constants';
 import { getErrorMessage } from '@domain/services/api-error.service';
 import { useCreateBookingMutation } from '@store/api/booking.api';

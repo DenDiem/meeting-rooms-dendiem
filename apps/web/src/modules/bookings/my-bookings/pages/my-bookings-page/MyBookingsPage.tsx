@@ -2,7 +2,7 @@ import type { JSX } from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 
-import { StatusMessage } from '@components/feedback/status-message/StatusMessage';
+import { StatusMessage } from '@components/status-message/StatusMessage';
 import { DEFAULT_PER_PAGE } from '@domain/models/constants/booking.constants';
 import { BookingScope } from '@domain/models/enums/booking-scope.enum';
 import type { Booking } from '@domain/models/interfaces/booking.interface';

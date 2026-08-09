@@ -1,7 +1,7 @@
 import type { JSX } from 'react';
 
-import { StatusMessage } from '@components/feedback/status-message/StatusMessage';
-import { Dialog, DialogActions } from '@components/overlay/dialog/Dialog';
+import { Dialog, DialogActions } from '@components/dialog/Dialog';
+import { StatusMessage } from '@components/status-message/StatusMessage';
 import type { Booking } from '@domain/models/interfaces/booking.interface';
 import { getErrorMessage } from '@domain/services/api-error.service';
 import { useCancelBookingMutation } from '@store/api/booking.api';
