@@ -6,7 +6,7 @@ import type {
   WeekScheduleQuery,
 } from '@domain/models/interfaces/booking.interface';
 
-import { baseApi } from './base.api';
+import { baseApi, type EnvelopeMeta } from './base.api';
 
 export const bookingApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -19,6 +19,12 @@ export const bookingApi = baseApi.injectEndpoints({
       query: ({ scope, page, perPage }) => ({
         url: '/bookings/mine',
         params: { scope, page, perPage },
+      }),
+      transformResponse: (items: Booking[], meta?: EnvelopeMeta) => ({
+        items,
+        total: meta?.pagination?.total ?? items.length,
+        page: meta?.pagination?.page ?? 1,
+        perPage: meta?.pagination?.perPage ?? items.length,
       }),
       providesTags: ['MyBookings'],
     }),
