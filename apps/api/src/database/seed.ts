@@ -38,12 +38,18 @@ const seed = async (prisma: PrismaClient): Promise<void> => {
     const passwordHash = await hash(user.password, SALT_ROUNDS);
     const { id } = await prisma.user.upsert({
       where: { emailNormalized: user.email },
-      update: { name: user.name, email: user.email, passwordHash },
+      update: {
+        name: user.name,
+        email: user.email,
+        passwordHash,
+        emailConfirmedAt: new Date(),
+      },
       create: {
         name: user.name,
         email: user.email,
         emailNormalized: user.email,
         passwordHash,
+        emailConfirmedAt: new Date(),
       },
     });
 

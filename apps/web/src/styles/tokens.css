@@ -18,6 +18,14 @@
   --accent-soft: #eff4ff;
   --accent-ring: rgba(37, 99, 235, 0.32);
 
+  --success-text: #027a48;
+  --success-surface: #ecfdf3;
+  --success-border: #abefc6;
+
+  --notice-text: #92400e;
+  --notice-surface: #fffaeb;
+  --notice-border: #fde68a;
+
   --danger-text: #b42318;
   --danger-surface: #fef3f2;
   --danger-border: #fecdc9;

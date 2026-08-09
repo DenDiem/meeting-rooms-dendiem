@@ -5,6 +5,8 @@ import { BrandMark } from '@components/brand-mark/BrandMark';
 import { Button } from '@components/button/Button';
 import { classNames } from '@domain/services/class-names.service';
 import { toInitials } from '@domain/services/initials.service';
+import { EmailConfirmationBanner } from '@modules/auth/components/email-confirmation-banner/EmailConfirmationBanner';
+import { EmailStatus } from '@modules/auth/components/email-status/EmailStatus';
 import { useGetSessionQuery, useLogoutMutation } from '@store/api/auth.api';
 
 import styles from './AppLayout.module.scss';
@@ -40,6 +42,7 @@ export const AppLayout = (): JSX.Element => {
 
         {user && (
           <span className={styles.user}>
+            <EmailStatus isConfirmed={user.isEmailConfirmed} />
             <span className={styles.avatar}>{toInitials(user.name)}</span>
             <span className={styles.name}>{user.name}</span>
           </span>
@@ -49,6 +52,8 @@ export const AppLayout = (): JSX.Element => {
           Sign out
         </Button>
       </header>
+
+      {user?.isEmailConfirmed === false && <EmailConfirmationBanner />}
 
       <Outlet />
     </div>

@@ -1,0 +1,23 @@
+.banner {
+  align-items: center;
+  background: var(--notice-surface);
+  border-bottom: 1px solid var(--notice-border);
+  display: flex;
+  gap: var(--space-4);
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-6);
+}
+
+.text {
+  color: var(--notice-text);
+  font: var(--body-regular-13);
+}
+
+@media (max-width: 640px) {
+  .banner {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+  }
+}
