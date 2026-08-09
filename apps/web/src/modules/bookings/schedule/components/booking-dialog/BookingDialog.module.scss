@@ -1,13 +1,10 @@
-.form {
+.range {
   display: grid;
-  gap: 0.75rem;
+  gap: var(--space-3);
+  grid-template-columns: 1fr 1fr;
 }
 
-.field {
-  display: grid;
-  gap: 0.25rem;
-}
-
-.label {
-  font-size: 0.875rem;
+.hint {
+  color: var(--text-muted);
+  font: var(--body-regular-12);
 }
