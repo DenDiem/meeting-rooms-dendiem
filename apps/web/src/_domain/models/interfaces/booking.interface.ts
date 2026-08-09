@@ -1,3 +1,5 @@
+import type { BookingScope } from '../enums/booking-scope.enum';
+
 export interface Booking {
   readonly id: string;
   readonly title: string;
@@ -11,7 +13,6 @@ export interface Booking {
 export interface PaginatedBookings {
   readonly items: Booking[];
   readonly total: number;
-  readonly page: number;
   readonly perPage: number;
 }
 
@@ -28,7 +29,7 @@ export interface WeekScheduleQuery {
 }
 
 export interface MyBookingsQuery {
-  readonly scope: string;
+  readonly scope: BookingScope;
   readonly page: number;
   readonly perPage: number;
 }

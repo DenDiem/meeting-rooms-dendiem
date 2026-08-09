@@ -23,7 +23,6 @@ export const bookingApi = baseApi.injectEndpoints({
       transformResponse: (items: Booking[], meta?: EnvelopeMeta) => ({
         items,
         total: meta?.pagination?.total ?? items.length,
-        page: meta?.pagination?.page ?? 1,
         perPage: meta?.pagination?.perPage ?? items.length,
       }),
       providesTags: ['MyBookings'],
