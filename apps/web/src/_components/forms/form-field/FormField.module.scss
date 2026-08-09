@@ -1,13 +1,19 @@
 .field {
   display: grid;
-  gap: 0.25rem;
+  gap: var(--space-1);
 }
 
 .label {
-  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font: var(--body-medium-13);
 }
 
 .error {
-  color: var(--color-danger);
-  font-size: 0.8125rem;
+  color: var(--danger-text);
+  font: var(--body-regular-12);
+}
+
+.hint {
+  color: var(--text-muted);
+  font: var(--body-regular-12);
 }

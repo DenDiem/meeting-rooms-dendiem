@@ -1,0 +1,14 @@
+.chevron {
+  display: block;
+  fill: none;
+  height: 1.125rem;
+  stroke: currentcolor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.75;
+  width: 1.125rem;
+}
+
+.right {
+  transform: rotate(180deg);
+}
