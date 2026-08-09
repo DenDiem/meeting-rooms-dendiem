@@ -16,13 +16,9 @@ export class RoomsService {
     return rooms.map(toRoomResource);
   }
 
-  public async getById(id: RoomModel['id']): Promise<RoomModel> {
-    const room = await this.roomRepository.findById(id);
-
-    if (!room) {
+  public async ensureExists(id: RoomModel['id']): Promise<void> {
+    if (!(await this.roomRepository.findById(id))) {
       throw new NotFoundException(ROOM_NOT_FOUND_MESSAGE);
     }
-
-    return room;
   }
 }

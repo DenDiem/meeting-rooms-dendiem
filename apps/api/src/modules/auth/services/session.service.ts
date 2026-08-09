@@ -1,11 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import type { Request } from 'express';
 
 import { MILLISECONDS_PER_DAY } from '@common/constants/time.constants';
-import { DEFAULT_SESSION_TTL_DAYS } from '@config/config.constants';
 
 import { createSessionToken, hashSessionToken } from '../helpers/session-token';
+import { SESSION_CONFIG, type SessionConfig } from '../interfaces/session-config.interface';
 import {
   SESSION_REPOSITORY,
   type SessionRepository,
@@ -20,9 +19,9 @@ export class SessionService {
   constructor(
     @Inject(SESSION_REPOSITORY) private readonly sessionRepository: SessionRepository,
     private readonly sessionCookieService: SessionCookieService,
-    configService: ConfigService,
+    @Inject(SESSION_CONFIG) sessionConfig: SessionConfig,
   ) {
-    this.ttlDays = Number(configService.get('SESSION_TTL_DAYS') ?? DEFAULT_SESSION_TTL_DAYS);
+    this.ttlDays = sessionConfig.ttlDays;
   }
 
   public async start(userId: PublicUserResource['id']): Promise<string> {

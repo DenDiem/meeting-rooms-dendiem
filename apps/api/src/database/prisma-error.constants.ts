@@ -1,1 +1,2 @@
 export const UNIQUE_VIOLATION_CODE = 'P2002';
+export const EXCLUSION_VIOLATION_CODE = '23P01';

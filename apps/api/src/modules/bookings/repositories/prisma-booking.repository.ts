@@ -1,14 +1,16 @@
 import { Injectable } from '@nestjs/common';
 
-import { PrismaService } from '@database/prisma.service';
 import type { SortDirection } from '@common/types/sort.types';
+import { isConstraintViolation } from '@database/is-constraint-violation';
+import { EXCLUSION_VIOLATION_CODE } from '@database/prisma-error.constants';
+import { PrismaService } from '@database/prisma.service';
 
+import { OVERLAP_CONSTRAINT_NAME } from '../constants/bookings.constants';
 import type { BookingFilterDto } from '../dto/booking-filter.dto';
 import type { NewBookingDto } from '../dto/new-booking.dto';
 import { SlotTakenException } from '../exceptions/slot-taken.exception';
 import { toBookingDetailsModel, toBookingModel } from '../factories/booking.factory';
 import { bookingFilters } from '../filters/booking.filters';
-import { isOverlapViolation } from '../helpers/is-overlap-violation';
 import type { BookingRepository, PagedBookings } from '../interfaces/booking-repository.interface';
 import type { BookingDetailsModel, BookingModel } from '../models/booking.model';
 
@@ -27,7 +29,7 @@ export class PrismaBookingRepository implements BookingRepository {
         await this.prismaService.booking.create({ data: booking, include: withRoomAndUser }),
       );
     } catch (error) {
-      if (isOverlapViolation(error)) {
+      if (isConstraintViolation(error, EXCLUSION_VIOLATION_CODE, OVERLAP_CONSTRAINT_NAME)) {
         throw new SlotTakenException();
       }
 

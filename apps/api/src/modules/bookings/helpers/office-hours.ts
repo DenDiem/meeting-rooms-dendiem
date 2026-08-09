@@ -1,8 +1,9 @@
 import { DateTime } from 'luxon';
 
+import type { OfficeHoursDto } from '@modules/office/dto/office-hours.dto';
+
 import { SLOT_MINUTES } from '../constants/bookings.constants';
 import type { IntervalDto } from '../dto/interval.dto';
-import type { OfficeHoursDto } from '../dto/office-hours.dto';
 
 const toOfficeTime = (moment: Date, { timeZone }: OfficeHoursDto): DateTime => {
   const officeTime = DateTime.fromJSDate(moment, { zone: timeZone });
@@ -46,11 +47,11 @@ export const isWithinOfficeHours = (
   return officeStart >= opensAt && officeEnd <= closesAt;
 };
 
-export const officeWeekOf = (date: string, { timeZone }: OfficeHoursDto): IntervalDto | null => {
+export const officeWeekOf = (date: string, { timeZone }: OfficeHoursDto): IntervalDto => {
   const weekStart = DateTime.fromISO(date, { zone: timeZone }).startOf('week');
 
   if (!weekStart.isValid) {
-    return null;
+    throw new Error(`Unknown office time zone: ${timeZone}`);
   }
 
   return { start: weekStart.toJSDate(), end: weekStart.plus({ weeks: 1 }).toJSDate() };

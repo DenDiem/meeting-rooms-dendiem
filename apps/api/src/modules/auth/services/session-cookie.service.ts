@@ -1,25 +1,23 @@
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { Inject, Injectable } from '@nestjs/common';
 import type { CookieOptions, Request, Response } from 'express';
 
 import { MILLISECONDS_PER_DAY } from '@common/constants/time.constants';
-import { DEFAULT_SESSION_COOKIE_NAME, DEFAULT_SESSION_TTL_DAYS } from '@config/config.constants';
+
+import { SESSION_CONFIG, type SessionConfig } from '../interfaces/session-config.interface';
 
 @Injectable()
 export class SessionCookieService {
   private readonly name: string;
   private readonly options: CookieOptions;
 
-  constructor(configService: ConfigService) {
-    const ttlDays = Number(configService.get('SESSION_TTL_DAYS') ?? DEFAULT_SESSION_TTL_DAYS);
-
-    this.name = configService.get<string>('SESSION_COOKIE_NAME') ?? DEFAULT_SESSION_COOKIE_NAME;
+  constructor(@Inject(SESSION_CONFIG) sessionConfig: SessionConfig) {
+    this.name = sessionConfig.cookieName;
     this.options = {
       httpOnly: true,
       sameSite: 'lax',
-      secure: configService.get('SESSION_COOKIE_SECURE') === 'true',
+      secure: sessionConfig.cookieSecure,
       path: '/',
-      maxAge: ttlDays * MILLISECONDS_PER_DAY,
+      maxAge: sessionConfig.ttlDays * MILLISECONDS_PER_DAY,
     };
   }
 

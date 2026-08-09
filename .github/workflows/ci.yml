@@ -8,6 +8,25 @@ on:
 jobs:
   verify:
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: meeting_rooms
+          POSTGRES_PASSWORD: meeting_rooms
+          POSTGRES_DB: meeting_rooms
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U meeting_rooms -d meeting_rooms"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      DATABASE_URL: postgresql://meeting_rooms:meeting_rooms@localhost:5432/meeting_rooms
+
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -15,10 +34,12 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
+      - run: npm run db:generate -w @meeting-rooms/api
       - run: npm run format:check
       - run: npm run lint
-      - run: npm run build
       - run: npm run typecheck
+      - run: npm run build
+      - run: npm run db:deploy -w @meeting-rooms/api
       - run: npm test
 
   commits:
