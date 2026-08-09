@@ -21,6 +21,7 @@ model User {
   bookings      Booking[]
   sessions      Session[]
   confirmations EmailConfirmation[]
+  series        BookingSeries[]
 }
 
 model EmailConfirmation {
@@ -56,6 +57,21 @@ model Room {
   capacity Int    @db.SmallInt
 
   bookings Booking[]
+  series   BookingSeries[]
+}
+
+model BookingSeries {
+  id        String   @id @default(uuid()) @db.Uuid
+  roomId    String   @db.Uuid
+  userId    String   @db.Uuid
+  title     String   @db.VarChar(100)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+
+  room     Room      @relation(fields: [roomId], references: [id], onDelete: Restrict)
+  user     User      @relation(fields: [userId], references: [id], onDelete: Restrict)
+  bookings Booking[]
+
+  @@index([userId])
 }
 
 model Booking {
@@ -67,10 +83,13 @@ model Booking {
   endsAt     DateTime  @db.Timestamptz(3)
   canceledAt DateTime? @db.Timestamptz(3)
   createdAt  DateTime  @default(now()) @db.Timestamptz(3)
+  seriesId   String?   @db.Uuid
 
-  room Room @relation(fields: [roomId], references: [id], onDelete: Restrict)
-  user User @relation(fields: [userId], references: [id], onDelete: Restrict)
+  room   Room           @relation(fields: [roomId], references: [id], onDelete: Restrict)
+  user   User           @relation(fields: [userId], references: [id], onDelete: Restrict)
+  series BookingSeries? @relation(fields: [seriesId], references: [id], onDelete: Cascade)
 
   @@index([roomId, startsAt])
   @@index([userId, startsAt])
+  @@index([seriesId])
 }

@@ -8,6 +8,7 @@ export interface Booking {
   readonly room: { readonly id: string; readonly name: string };
   readonly user: { readonly id: string; readonly name: string };
   readonly isMine: boolean;
+  readonly seriesId: string | null;
 }
 
 export interface PaginatedBookings {
@@ -21,6 +22,10 @@ export interface CreateBookingPayload {
   readonly title: string;
   readonly startsAt: string;
   readonly endsAt: string;
+}
+
+export interface CreateBookingSeriesPayload extends CreateBookingPayload {
+  readonly repeats: number;
 }
 
 export interface WeekScheduleQuery {

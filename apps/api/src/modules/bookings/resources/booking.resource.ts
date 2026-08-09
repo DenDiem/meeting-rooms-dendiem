@@ -8,6 +8,7 @@ export interface BookingResource {
   readonly room: { readonly id: string; readonly name: string };
   readonly user: { readonly id: string; readonly name: string };
   readonly isMine: boolean;
+  readonly seriesId: string | null;
 }
 
 export const toBookingResource = (
@@ -21,4 +22,5 @@ export const toBookingResource = (
   room: booking.room,
   user: booking.user,
   isMine: booking.userId === currentUserId,
+  seriesId: booking.seriesId,
 });

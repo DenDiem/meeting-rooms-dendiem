@@ -12,7 +12,17 @@ export const toBookingModel = ({
   startsAt,
   endsAt,
   canceledAt,
-}: Booking): BookingModel => ({ id, roomId, userId, title, startsAt, endsAt, canceledAt });
+  seriesId,
+}: Booking): BookingModel => ({
+  id,
+  roomId,
+  userId,
+  title,
+  startsAt,
+  endsAt,
+  canceledAt,
+  seriesId,
+});
 
 export const toBookingDetailsModel = (booking: BookingRow): BookingDetailsModel => ({
   ...toBookingModel(booking),

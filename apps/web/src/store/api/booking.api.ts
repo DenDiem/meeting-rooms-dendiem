@@ -1,6 +1,7 @@
 import type {
   Booking,
   CreateBookingPayload,
+  CreateBookingSeriesPayload,
   MyBookingsQuery,
   PaginatedBookings,
   WeekScheduleQuery,
@@ -33,8 +34,18 @@ export const bookingApi = baseApi.injectEndpoints({
       invalidatesTags: ['Schedule', 'MyBookings'],
     }),
 
+    createBookingSeries: builder.mutation<Booking[], CreateBookingSeriesPayload>({
+      query: (body) => ({ url: '/bookings/series', method: 'POST', body }),
+      invalidatesTags: ['Schedule', 'MyBookings'],
+    }),
+
     cancelBooking: builder.mutation<void, string>({
       query: (bookingId) => ({ url: `/bookings/${bookingId}`, method: 'DELETE' }),
+      invalidatesTags: ['Schedule', 'MyBookings'],
+    }),
+
+    cancelBookingSeries: builder.mutation<void, string>({
+      query: (seriesId) => ({ url: `/bookings/series/${seriesId}`, method: 'DELETE' }),
       invalidatesTags: ['Schedule', 'MyBookings'],
     }),
   }),
@@ -44,5 +55,7 @@ export const {
   useGetWeekScheduleQuery,
   useGetMyBookingsQuery,
   useCreateBookingMutation,
+  useCreateBookingSeriesMutation,
   useCancelBookingMutation,
+  useCancelBookingSeriesMutation,
 } = bookingApi;

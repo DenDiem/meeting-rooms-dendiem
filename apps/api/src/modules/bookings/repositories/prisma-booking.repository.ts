@@ -7,11 +7,14 @@ import { PrismaService } from '@database/prisma.service';
 
 import { OVERLAP_CONSTRAINT_NAME } from '../constants/bookings.constants';
 import type { BookingFilterDto } from '../dto/booking-filter.dto';
+import type { NewBookingSeriesDto } from '../dto/new-booking-series.dto';
 import type { NewBookingDto } from '../dto/new-booking.dto';
 import { SlotTakenException } from '../exceptions/slot-taken.exception';
+import { toBookingSeriesModel } from '../factories/booking-series.factory';
 import { toBookingDetailsModel, toBookingModel } from '../factories/booking.factory';
 import { bookingFilters } from '../filters/booking.filters';
 import type { BookingRepository, PagedBookings } from '../interfaces/booking-repository.interface';
+import type { BookingSeriesModel } from '../models/booking-series.model';
 import type { BookingDetailsModel, BookingModel } from '../models/booking.model';
 
 const withRoomAndUser = {
@@ -28,6 +31,37 @@ export class PrismaBookingRepository implements BookingRepository {
       return toBookingDetailsModel(
         await this.prismaService.booking.create({ data: booking, include: withRoomAndUser }),
       );
+    } catch (error) {
+      if (isConstraintViolation(error, EXCLUSION_VIOLATION_CODE, OVERLAP_CONSTRAINT_NAME)) {
+        throw new SlotTakenException();
+      }
+
+      throw error;
+    }
+  }
+
+  public async createSeries(
+    series: NewBookingSeriesDto,
+    occurrences: readonly NewBookingDto[],
+  ): Promise<BookingDetailsModel[]> {
+    try {
+      return await this.prismaService.$transaction(async (transaction) => {
+        const { id: seriesId } = await transaction.bookingSeries.create({ data: series });
+        const created: BookingDetailsModel[] = [];
+
+        for (const occurrence of occurrences) {
+          created.push(
+            toBookingDetailsModel(
+              await transaction.booking.create({
+                data: { ...occurrence, seriesId },
+                include: withRoomAndUser,
+              }),
+            ),
+          );
+        }
+
+        return created;
+      });
     } catch (error) {
       if (isConstraintViolation(error, EXCLUSION_VIOLATION_CODE, OVERLAP_CONSTRAINT_NAME)) {
         throw new SlotTakenException();
@@ -86,5 +120,24 @@ export class PrismaBookingRepository implements BookingRepository {
 
   public async cancel(id: BookingModel['id'], canceledAt: Date): Promise<void> {
     await this.prismaService.booking.update({ where: { id }, data: { canceledAt } });
+  }
+
+  public async findSeriesById(id: BookingSeriesModel['id']): Promise<BookingSeriesModel | null> {
+    const series = await this.prismaService.bookingSeries.findUnique({ where: { id } });
+
+    return series ? toBookingSeriesModel(series) : null;
+  }
+
+  public async cancelSeries(
+    seriesId: BookingSeriesModel['id'],
+    canceledAt: Date,
+    startingFrom: Date,
+  ): Promise<number> {
+    const { count } = await this.prismaService.booking.updateMany({
+      where: { seriesId, canceledAt: null, startsAt: { gte: startingFrom } },
+      data: { canceledAt },
+    });
+
+    return count;
   }
 }
