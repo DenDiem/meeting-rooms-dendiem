@@ -1,14 +1,15 @@
 import type { JSX } from 'react';
 import { Navigate, Outlet } from 'react-router';
 
+import { PageLoader } from '@components/feedback/page-loader/PageLoader';
 import { StatusMessage } from '@components/feedback/status-message/StatusMessage';
 import { useGetSessionQuery } from '@store/api/auth.api';
 
 export const RequireSession = (): JSX.Element => {
-  const { data: user, isLoading, isError } = useGetSessionQuery();
+  const { data: user, isUninitialized, isLoading, isError } = useGetSessionQuery();
 
-  if (isLoading) {
-    return <StatusMessage tone="info">Checking your session…</StatusMessage>;
+  if (isUninitialized || isLoading) {
+    return <PageLoader label="Checking your session…" />;
   }
 
   if (isError) {

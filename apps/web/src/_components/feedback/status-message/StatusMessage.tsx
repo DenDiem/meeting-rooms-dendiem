@@ -10,10 +10,5 @@ interface StatusMessageProps {
 }
 
 export const StatusMessage = ({ tone, children }: StatusMessageProps): JSX.Element => (
-  <p
-    className={classNames(styles.status, tone === 'error' && styles.error)}
-    role={tone === 'error' ? 'alert' : 'status'}
-  >
-    {children}
-  </p>
+  <p className={classNames(styles.status, tone === 'error' && styles.error)}>{children}</p>
 );

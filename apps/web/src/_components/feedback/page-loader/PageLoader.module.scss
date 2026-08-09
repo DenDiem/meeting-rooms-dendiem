@@ -1,0 +1,44 @@
+.loader {
+  align-content: center;
+  animation: appear 150ms ease 220ms both;
+  display: grid;
+  gap: var(--space-3);
+  justify-items: center;
+  min-height: 100dvh;
+}
+
+.spinner {
+  animation: spin 700ms linear infinite;
+  border: 2px solid var(--border-default);
+  border-radius: var(--radius-pill);
+  border-top-color: var(--accent-default);
+  height: 1.5rem;
+  width: 1.5rem;
+}
+
+.label {
+  color: var(--text-muted);
+  font: var(--body-regular-13);
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation-duration: 2s;
+  }
+}

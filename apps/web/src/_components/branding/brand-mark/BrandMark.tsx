@@ -9,7 +9,7 @@ interface BrandMarkProps {
 }
 
 export const BrandMark = ({ className }: BrandMarkProps): JSX.Element => (
-  <svg className={classNames(styles.mark, className)} viewBox="0 0 32 32" aria-hidden="true">
+  <svg className={classNames(styles.mark, className)} viewBox="0 0 32 32">
     <rect className={styles.plate} width="32" height="32" rx="7" />
     <path className={styles.hand} d="M16 8.5v8h6" />
   </svg>

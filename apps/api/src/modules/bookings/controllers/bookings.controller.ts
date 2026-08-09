@@ -13,6 +13,7 @@ import {
 } from '@nestjs/common';
 
 import { ZodValidationPipe } from '@common/pipes/zod-validation.pipe';
+import type { Paginated } from '@common/resources/paginated';
 import { CurrentUser } from '@modules/auth/decorators/current-user.decorator';
 import { SessionGuard } from '@modules/auth/guards/session.guard';
 import type { PublicUserResource } from '@modules/auth/resources/public-user.resource';
@@ -24,7 +25,6 @@ import { createBookingRequestSchema } from '../requests/create-booking.request';
 import { myBookingsRequestSchema } from '../requests/my-bookings.request';
 import { weekScheduleRequestSchema } from '../requests/week-schedule.request';
 import type { BookingResource } from '../resources/booking.resource';
-import type { PaginatedBookingsResource } from '../resources/paginated-bookings.resource';
 import { BookingsService } from '../services/bookings.service';
 
 @Controller('bookings')
@@ -52,7 +52,7 @@ export class BookingsController {
   public mine(
     @Query(new ZodValidationPipe(myBookingsRequestSchema)) query: MyBookingsDto,
     @CurrentUser() user: PublicUserResource,
-  ): Promise<PaginatedBookingsResource> {
+  ): Promise<Paginated<BookingResource>> {
     return this.bookingsService.mine(query, user.id);
   }
 

@@ -1,0 +1,44 @@
+.page {
+  display: grid;
+  min-height: 100dvh;
+  padding: var(--space-8) var(--space-4);
+  place-items: center;
+}
+
+.card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-l);
+  box-shadow: var(--shadow-s);
+  display: grid;
+  gap: var(--space-5);
+  padding: var(--space-6);
+  width: var(--page-narrow-width);
+}
+
+.head {
+  display: grid;
+  gap: var(--space-2);
+  justify-items: center;
+  text-align: center;
+}
+
+.mark {
+  height: 2.25rem;
+  width: 2.25rem;
+}
+
+.title {
+  font: var(--heading-semibold-20);
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  font: var(--body-regular-13);
+}
+
+.footer {
+  color: var(--text-secondary);
+  font: var(--body-regular-13);
+  text-align: center;
+}
