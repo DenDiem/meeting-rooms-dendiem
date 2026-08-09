@@ -3,42 +3,14 @@ import { hash } from 'bcryptjs';
 import { config } from 'dotenv';
 import { DateTime } from 'luxon';
 
-import { PrismaClient } from '../src/generated/prisma/client';
+import { DEFAULT_OFFICE_TIMEZONE } from '@config/config.constants';
+import { PrismaClient } from '@generated/prisma/client';
+
+import { SALT_ROUNDS, SEED_BOOKINGS, SEED_ROOMS, SEED_USERS } from './seed.constants';
 
 config({ path: '../../.env', quiet: true });
 
-const SALT_ROUNDS = 10;
-
-const ROOMS = [
-  { name: 'Aquarium', floor: 1, capacity: 6 },
-  { name: 'Workshop', floor: 1, capacity: 20 },
-  { name: 'Mars', floor: 2, capacity: 4 },
-  { name: 'Apollo', floor: 2, capacity: 10 },
-  { name: 'Lighthouse', floor: 3, capacity: 8 },
-  { name: 'Observatory', floor: 3, capacity: 14 },
-];
-
-const USERS = [
-  { name: 'Ivan Petrenko', email: 'ivan@example.com', password: 'password123' },
-  { name: 'Olena Kovalenko', email: 'olena@example.com', password: 'password123' },
-];
-
-const DEMO_BOOKINGS = [
-  {
-    room: 'Aquarium',
-    user: 'ivan@example.com',
-    title: 'Sprint planning',
-    day: 0,
-    from: 10,
-    to: 11,
-  },
-  { room: 'Aquarium', user: 'olena@example.com', title: 'Design sync', day: 0, from: 11, to: 12 },
-  { room: 'Mars', user: 'olena@example.com', title: 'One-on-one', day: 1, from: 9.5, to: 10.5 },
-  { room: 'Apollo', user: 'ivan@example.com', title: 'Quarterly review', day: 2, from: 14, to: 18 },
-  { room: 'Observatory', user: 'olena@example.com', title: 'Standup', day: 3, from: 12, to: 12.5 },
-];
-
-const officeZone = process.env['OFFICE_TIMEZONE'] ?? 'Europe/Kyiv';
+const officeZone = process.env['OFFICE_TIMEZONE'] ?? DEFAULT_OFFICE_TIMEZONE;
 const nextMonday = DateTime.now().setZone(officeZone).startOf('week').plus({ weeks: 1 });
 
 const officeTime = (dayOffset: number, hour: number): Date =>
@@ -50,7 +22,7 @@ const officeTime = (dayOffset: number, hour: number): Date =>
 const seed = async (prisma: PrismaClient): Promise<void> => {
   const rooms = new Map<string, string>();
 
-  for (const room of ROOMS) {
+  for (const room of SEED_ROOMS) {
     const { id } = await prisma.room.upsert({
       where: { name: room.name },
       update: { floor: room.floor, capacity: room.capacity },
@@ -62,11 +34,11 @@ const seed = async (prisma: PrismaClient): Promise<void> => {
 
   const users = new Map<string, string>();
 
-  for (const user of USERS) {
+  for (const user of SEED_USERS) {
     const passwordHash = await hash(user.password, SALT_ROUNDS);
     const { id } = await prisma.user.upsert({
       where: { emailNormalized: user.email },
-      update: { name: user.name, passwordHash },
+      update: { name: user.name, email: user.email, passwordHash },
       create: {
         name: user.name,
         email: user.email,
@@ -80,7 +52,7 @@ const seed = async (prisma: PrismaClient): Promise<void> => {
 
   await prisma.booking.deleteMany();
 
-  for (const booking of DEMO_BOOKINGS) {
+  for (const booking of SEED_BOOKINGS) {
     const roomId = rooms.get(booking.room);
     const userId = users.get(booking.user);
 
@@ -100,7 +72,7 @@ const seed = async (prisma: PrismaClient): Promise<void> => {
   }
 
   console.log(
-    `Seeded ${ROOMS.length} rooms, ${USERS.length} users and ${DEMO_BOOKINGS.length} bookings.`,
+    `Seeded ${SEED_ROOMS.length} rooms, ${SEED_USERS.length} users and ${SEED_BOOKINGS.length} bookings.`,
   );
   console.log(`Demo week starts on ${nextMonday.toISODate()} (${officeZone}).`);
 };
