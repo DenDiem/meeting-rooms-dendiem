@@ -2,29 +2,43 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import type { JSX } from 'react';
 import { useForm } from 'react-hook-form';
 
+import { Button } from '@components/actions/button/Button';
 import { StatusMessage } from '@components/feedback/status-message/StatusMessage';
 import { FormField } from '@components/forms/form-field/FormField';
 import type { LoginPayload } from '@domain/models/interfaces/auth-payload.interface';
-import { getErrorMessage } from '@domain/services/api-error.service';
+import {
+  applyFieldErrors,
+  getErrorMessage,
+  hasFieldErrors,
+} from '@domain/services/api-error.service';
 import { loginValidator } from '@domain/validators/auth.validators';
 import { useLoginMutation } from '@store/api/auth.api';
 
 import styles from './LoginForm.module.scss';
+
+const SERVER_FIELDS = ['email', 'password'] as const;
 
 export const LoginForm = (): JSX.Element => {
   const [login, { isLoading, error }] = useLoginMutation();
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm<LoginPayload>({ resolver: zodResolver(loginValidator) });
 
+  const submit = async (values: LoginPayload): Promise<void> => {
+    const result = await login(values);
+
+    if ('error' in result) {
+      applyFieldErrors(result.error, SERVER_FIELDS, (field, message) =>
+        setError(field, { message }),
+      );
+    }
+  };
+
   return (
-    <form
-      className={styles.form}
-      onSubmit={handleSubmit((values) => void login(values))}
-      noValidate
-    >
+    <form className={styles.form} onSubmit={(event) => void handleSubmit(submit)(event)} noValidate>
       <FormField label="Email" error={errors.email?.message}>
         <input type="email" autoComplete="email" {...register('email')} />
       </FormField>
@@ -33,11 +47,13 @@ export const LoginForm = (): JSX.Element => {
         <input type="password" autoComplete="current-password" {...register('password')} />
       </FormField>
 
-      {error && <StatusMessage tone="error">{getErrorMessage(error)}</StatusMessage>}
+      {error !== undefined && !hasFieldErrors(error) && (
+        <StatusMessage tone="error">{getErrorMessage(error)}</StatusMessage>
+      )}
 
-      <button type="submit" disabled={isLoading}>
+      <Button variant="primary" type="submit" disabled={isLoading}>
         {isLoading ? 'Signing in…' : 'Sign in'}
-      </button>
+      </Button>
     </form>
   );
 };

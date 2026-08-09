@@ -7,6 +7,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 
+import { Paginated } from '@common/resources/paginated';
 import { RoomsService } from '@modules/rooms/services/rooms.service';
 
 import {
@@ -29,7 +30,6 @@ import {
 } from '../interfaces/booking-repository.interface';
 import type { BookingModel } from '../models/booking.model';
 import { toBookingResource, type BookingResource } from '../resources/booking.resource';
-import type { PaginatedBookingsResource } from '../resources/paginated-bookings.resource';
 import { OfficeHoursService } from './office-hours.service';
 
 @Injectable()
@@ -116,7 +116,7 @@ export class BookingsService {
   public async mine(
     { scope, page, perPage }: MyBookingsDto,
     userId: string,
-  ): Promise<PaginatedBookingsResource> {
+  ): Promise<Paginated<BookingResource>> {
     const now = new Date();
     const isUpcoming = scope === BookingScope.Upcoming;
 
@@ -127,11 +127,11 @@ export class BookingsService {
       isUpcoming ? 'asc' : 'desc',
     );
 
-    return {
-      items: items.map((booking) => toBookingResource(booking, userId)),
+    return new Paginated(
+      items.map((booking) => toBookingResource(booking, userId)),
       total,
       page,
       perPage,
-    };
+    );
   }
 }

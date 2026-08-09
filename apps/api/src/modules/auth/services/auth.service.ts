@@ -25,7 +25,10 @@ export class AuthService {
       return toPublicUserResource(user);
     } catch (error) {
       if (error instanceof EmailAlreadyTakenException) {
-        throw new ConflictException(error.message);
+        throw new ConflictException({
+          message: error.message,
+          fields: { email: error.message },
+        });
       }
 
       throw error;

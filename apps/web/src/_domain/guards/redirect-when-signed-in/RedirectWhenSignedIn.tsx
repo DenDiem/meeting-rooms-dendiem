@@ -1,14 +1,14 @@
 import type { JSX } from 'react';
 import { Navigate, Outlet } from 'react-router';
 
-import { StatusMessage } from '@components/feedback/status-message/StatusMessage';
+import { PageLoader } from '@components/feedback/page-loader/PageLoader';
 import { useGetSessionQuery } from '@store/api/auth.api';
 
 export const RedirectWhenSignedIn = (): JSX.Element => {
-  const { data: user, isLoading } = useGetSessionQuery();
+  const { data: user, isUninitialized, isLoading } = useGetSessionQuery();
 
-  if (isLoading) {
-    return <StatusMessage tone="info">Checking your session…</StatusMessage>;
+  if (isUninitialized || isLoading) {
+    return <PageLoader label="Checking your session…" />;
   }
 
   return user ? <Navigate to="/schedule" replace /> : <Outlet />;

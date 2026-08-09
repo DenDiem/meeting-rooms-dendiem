@@ -12,7 +12,6 @@ export const Chevron = ({ direction }: ChevronProps): JSX.Element => (
   <svg
     className={classNames(styles.chevron, direction === 'right' && styles.right)}
     viewBox="0 0 20 20"
-    aria-hidden="true"
   >
     <path d="M12.25 4.5 6.75 10l5.5 5.5" />
   </svg>
