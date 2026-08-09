@@ -28,6 +28,7 @@ import { BookingScope } from '../enums/booking-scope.enum';
 import { SlotTakenException } from '../exceptions/slot-taken.exception';
 import { describeBookingTimeViolation, findBookingTimeViolation } from '../helpers/booking-time';
 import { describeConflicts } from '../helpers/describe-conflicts';
+import { overlaps } from '../helpers/interval';
 import { officeWeekOf } from '../helpers/office-hours';
 import { weeklyOccurrences } from '../helpers/weekly-occurrences';
 import {
@@ -180,15 +181,20 @@ export class BookingsService {
     roomId: string,
     occurrences: readonly IntervalDto[],
   ): Promise<Date[]> {
-    const taken: Date[] = [];
+    const span = {
+      start: occurrences[0]?.start ?? new Date(),
+      end: occurrences[occurrences.length - 1]?.end ?? new Date(),
+    };
 
-    for (const occurrence of occurrences) {
-      if (await this.bookingRepository.findFirst({ roomId, overlapping: occurrence })) {
-        taken.push(occurrence.start);
-      }
-    }
+    const booked = await this.bookingRepository.findMany({ roomId, overlapping: span }, 'asc');
 
-    return taken;
+    return occurrences
+      .filter((occurrence) =>
+        booked.some((booking) =>
+          overlaps(occurrence, { start: booking.startsAt, end: booking.endsAt }),
+        ),
+      )
+      .map(({ start }) => start);
   }
 
   public async weekSchedule(

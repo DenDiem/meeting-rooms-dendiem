@@ -8,7 +8,7 @@
     "dev": "prisma generate && concurrently -k -n nest,alias -c blue,green \"nest start --watch --preserveWatchOutput\" \"tsc-alias -p tsconfig.build.json --watch\"",
     "build": "prisma generate && nest build && tsc-alias -p tsconfig.build.json",
     "start": "node dist/main.js",
-    "test": "vitest run && vitest run --config vitest.integration.config.mts",
+    "test": "vitest run",
     "test:unit": "vitest run",
     "test:integration": "vitest run --config vitest.integration.config.mts",
     "typecheck": "tsc -p tsconfig.json",

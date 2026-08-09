@@ -41,6 +41,7 @@ jobs:
       - run: npm run build
       - run: npm run db:deploy -w @meeting-rooms/api
       - run: npm test
+      - run: npm run test:integration -w @meeting-rooms/api
 
   commits:
     if: github.event_name == 'pull_request'
