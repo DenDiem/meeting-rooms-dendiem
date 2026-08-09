@@ -1,32 +1,70 @@
 import type { JSX } from 'react';
 import { useState } from 'react';
 
-import { Dialog, DialogActions } from '@components/dialog/Dialog';
+import { Button } from '@components/button/Button';
+import { Dialog, DialogActions, DialogBody } from '@components/dialog/Dialog';
+import { FormField } from '@components/form-field/FormField';
 import { StatusMessage } from '@components/status-message/StatusMessage';
-import { TITLE_MAX_LENGTH } from '@domain/models/constants/booking.constants';
+import {
+  MAX_BOOKING_MINUTES,
+  MIN_BOOKING_MINUTES,
+  TITLE_MAX_LENGTH,
+} from '@domain/models/constants/booking.constants';
+import type { Booking } from '@domain/models/interfaces/booking.interface';
+import type { OfficeHours } from '@domain/models/interfaces/office.interface';
 import { getErrorMessage } from '@domain/services/api-error.service';
 import { useCreateBookingMutation } from '@store/api/booking.api';
 
-import { formatLocalTime } from '../../services/week.service';
+import { availableEndTimes, freeStartTimes } from '../../services/booking-options.service';
+import { durationInMinutes, formatDuration } from '../../services/duration.service';
+import { formatLocalDate, formatLocalTime } from '../../../services/booking-format.service';
+import { officeDaySlots } from '../../services/week.service';
 import type { WeekSlot } from '../../types/week.types';
 import styles from './BookingDialog.module.scss';
 
 interface BookingDialogProps {
   readonly roomId: string;
+  readonly officeHours: OfficeHours;
   readonly slot: WeekSlot;
+  readonly bookings: Booking[];
   readonly onClose: () => void;
 }
 
-export const BookingDialog = ({ roomId, slot, onClose }: BookingDialogProps): JSX.Element => {
+export const BookingDialog = ({
+  roomId,
+  officeHours,
+  slot,
+  bookings,
+  onClose,
+}: BookingDialogProps): JSX.Element => {
   const [title, setTitle] = useState('');
+  const [start, setStart] = useState(slot.start);
+  const [end, setEnd] = useState(slot.end);
   const [createBooking, { isLoading, error }] = useCreateBookingMutation();
+
+  const daySlots = officeDaySlots(slot.start, officeHours);
+  const starts = freeStartTimes(daySlots, bookings, new Date());
+  const ends = availableEndTimes(start, daySlots, bookings);
+  const duration = durationInMinutes(start, end);
+
+  const changeStart = (value: string): void => {
+    const nextStart = new Date(value);
+    const nextEnds = availableEndTimes(nextStart, daySlots, bookings);
+    const nextEnd = nextEnds[0];
+
+    setStart(nextStart);
+
+    if (nextEnd !== undefined) {
+      setEnd(nextEnd);
+    }
+  };
 
   const submit = async (): Promise<void> => {
     const result = await createBooking({
       roomId,
       title,
-      startsAt: slot.start.toISOString(),
-      endsAt: slot.end.toISOString(),
+      startsAt: start.toISOString(),
+      endsAt: end.toISOString(),
     });
 
     if (!('error' in result)) {
@@ -35,38 +73,69 @@ export const BookingDialog = ({ roomId, slot, onClose }: BookingDialogProps): JS
   };
 
   return (
-    <Dialog title="New booking">
-      <p>
-        {formatLocalTime(slot.start)} – {formatLocalTime(slot.end)}
-      </p>
-
+    <Dialog title="New booking" description={formatLocalDate(start)} onDismiss={onClose}>
       <form
-        className={styles.form}
         onSubmit={(event) => {
           event.preventDefault();
           void submit();
         }}
       >
-        <label className={styles.field}>
-          <span className={styles.label}>Title</span>
-          <input
-            type="text"
-            value={title}
-            maxLength={TITLE_MAX_LENGTH}
-            onChange={(event) => setTitle(event.target.value)}
-            required
-          />
-        </label>
+        <DialogBody>
+          <FormField label="Title">
+            <input
+              type="text"
+              value={title}
+              maxLength={TITLE_MAX_LENGTH}
+              onChange={(event) => setTitle(event.target.value)}
+              required
+            />
+          </FormField>
 
-        {error && <StatusMessage tone="error">{getErrorMessage(error)}</StatusMessage>}
+          <div className={styles.range}>
+            <FormField label="Start">
+              <select
+                value={start.toISOString()}
+                onChange={(event) => changeStart(event.target.value)}
+              >
+                {starts.map((option) => (
+                  <option key={option.toISOString()} value={option.toISOString()}>
+                    {formatLocalTime(option)}
+                  </option>
+                ))}
+              </select>
+            </FormField>
+
+            <FormField label="End">
+              <select
+                value={end.toISOString()}
+                onChange={(event) => setEnd(new Date(event.target.value))}
+              >
+                {ends.map((option) => (
+                  <option key={option.toISOString()} value={option.toISOString()}>
+                    {formatLocalTime(option)}
+                  </option>
+                ))}
+              </select>
+            </FormField>
+          </div>
+
+          <span className={styles.hint}>
+            {formatDuration(duration)} · from {MIN_BOOKING_MINUTES} minutes to{' '}
+            {formatDuration(MAX_BOOKING_MINUTES)}
+          </span>
+
+          {error !== undefined && (
+            <StatusMessage tone="error">{getErrorMessage(error)}</StatusMessage>
+          )}
+        </DialogBody>
 
         <DialogActions>
-          <button type="submit" disabled={isLoading || title.trim().length === 0}>
-            {isLoading ? 'Booking…' : 'Book'}
-          </button>
-          <button type="button" onClick={onClose}>
+          <Button variant="ghost" onClick={onClose}>
             Cancel
-          </button>
+          </Button>
+          <Button variant="primary" type="submit" disabled={isLoading || title.trim().length === 0}>
+            {isLoading ? 'Booking…' : 'Book'}
+          </Button>
         </DialogActions>
       </form>
     </Dialog>

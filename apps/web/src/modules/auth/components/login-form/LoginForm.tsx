@@ -14,8 +14,6 @@ import {
 import { loginValidator } from '@domain/validators/auth.validators';
 import { useLoginMutation } from '@store/api/auth.api';
 
-import styles from './LoginForm.module.scss';
-
 const SERVER_FIELDS = ['email', 'password'] as const;
 
 export const LoginForm = (): JSX.Element => {
@@ -38,7 +36,7 @@ export const LoginForm = (): JSX.Element => {
   };
 
   return (
-    <form className={styles.form} onSubmit={(event) => void handleSubmit(submit)(event)} noValidate>
+    <form onSubmit={(event) => void handleSubmit(submit)(event)} noValidate>
       <FormField label="Email" error={errors.email?.message}>
         <input type="email" autoComplete="email" {...register('email')} />
       </FormField>

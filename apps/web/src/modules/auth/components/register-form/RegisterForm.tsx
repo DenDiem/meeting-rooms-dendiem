@@ -15,8 +15,6 @@ import {
 import { registerValidator } from '@domain/validators/auth.validators';
 import { useRegisterMutation } from '@store/api/auth.api';
 
-import styles from './RegisterForm.module.scss';
-
 const SERVER_FIELDS = ['name', 'email', 'password'] as const;
 
 export const RegisterForm = (): JSX.Element => {
@@ -39,7 +37,7 @@ export const RegisterForm = (): JSX.Element => {
   };
 
   return (
-    <form className={styles.form} onSubmit={(event) => void handleSubmit(submit)(event)} noValidate>
+    <form onSubmit={(event) => void handleSubmit(submit)(event)} noValidate>
       <FormField label="Name" error={errors.name?.message}>
         <input type="text" autoComplete="name" {...register('name')} />
       </FormField>

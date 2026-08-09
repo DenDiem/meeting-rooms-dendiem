@@ -16,6 +16,11 @@
   width: var(--page-narrow-width);
 }
 
+.card form {
+  display: grid;
+  gap: var(--space-4);
+}
+
 .head {
   display: grid;
   gap: var(--space-2);

@@ -1,71 +1,208 @@
+@use '../../../../../styles/breakpoints' as bp;
+
+.wrapper {
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-l);
+  overflow: hidden;
+}
+
+.updating {
+  opacity: 0.55;
+  pointer-events: none;
+  transition: opacity var(--transition-fast);
+}
+
 .scroll {
   overflow-x: auto;
 }
 
 .grid {
-  border-collapse: collapse;
-  min-width: 60rem;
-  table-layout: fixed;
-  width: 100%;
-
-  th,
-  td {
-    border: 1px solid var(--color-line);
-    padding: 0;
-    vertical-align: top;
-  }
-
-  thead th {
-    font-size: 0.875rem;
-    padding: 0.5rem;
-  }
-
-  tbody th {
-    font-size: 0.75rem;
-    font-weight: 400;
-    padding: 0.25rem 0.5rem;
-    white-space: nowrap;
-    width: 5rem;
-  }
-
-  td button {
-    background: none;
-    border: 0;
-    display: grid;
-    gap: 0.125rem;
-    height: 100%;
-    padding: 0.25rem 0.4rem;
-    text-align: left;
-    width: 100%;
-  }
+  display: grid;
+  grid-template-columns: var(--grid-time-width) repeat(7, minmax(7rem, 1fr));
+  min-width: var(--grid-min-width);
+  position: relative;
+  user-select: none;
 }
 
-.today {
-  font-weight: 700;
+.row {
+  display: contents;
+}
+
+.corner {
+  border-bottom: 1px solid var(--border-strong);
+  border-right: 1px solid var(--border-default);
+}
+
+.head {
+  border-bottom: 1px solid var(--border-strong);
+  border-right: 1px solid var(--border-default);
+  display: grid;
+  gap: 2px;
+  padding: var(--space-3);
+}
+
+.head:last-of-type {
+  border-right: 0;
+}
+
+.headToday {
+  background: var(--accent-soft);
+}
+
+.headToday .weekday {
+  color: var(--accent-default);
+}
+
+.weekday {
+  font: var(--body-medium-13);
+}
+
+.date {
+  color: var(--text-muted);
+  font: var(--body-regular-12);
+}
+
+.time {
+  align-items: flex-start;
+  border-right: 1px solid var(--border-default);
+  color: var(--text-muted);
+  display: flex;
+  font: var(--body-regular-12);
+  font-variant-numeric: tabular-nums;
+  height: var(--grid-row-height);
+  justify-content: flex-end;
+  padding: 3px var(--space-2) 0 0;
+}
+
+.slot {
+  border-bottom: 1px dotted var(--border-default);
+  border-right: 1px solid var(--border-default);
+  height: var(--grid-row-height);
+  position: relative;
+}
+
+.hourEnd {
+  border-bottom: 1px solid var(--border-default);
+}
+
+.slot:last-child {
+  border-right: 0;
+}
+
+.action {
+  align-content: center;
+  background: transparent;
+  border: 0;
+  display: grid;
+  gap: 1px;
+  height: 100%;
+  padding: 0 var(--space-2);
+  text-align: left;
+  width: 100%;
+}
+
+.hint {
+  color: transparent;
+  font: var(--body-regular-12);
+}
+
+.free .action:hover {
+  background: var(--slot-free-hover);
+}
+
+.free .action:hover .hint {
+  color: var(--accent-default);
+}
+
+.selected {
+  background: var(--accent-soft);
+}
+
+.selected .hint {
+  visibility: hidden;
+}
+
+.selectionOutline {
+  align-items: flex-start;
+  border: 1px dashed var(--accent-default);
+  border-radius: var(--radius-s);
+  color: var(--accent-default);
+  display: flex;
+  font: var(--body-medium-12);
+  font-variant-numeric: tabular-nums;
+  inset: 0;
+  justify-content: center;
+  padding-top: 3px;
+  pointer-events: none;
+  position: absolute;
+  z-index: 3;
 }
 
 .past {
-  background: var(--color-muted);
+  background: var(--slot-past);
 }
 
 .taken {
-  background: var(--color-taken);
+  background: var(--slot-taken-surface);
+  box-shadow: inset 3px 0 0 var(--slot-taken-border);
 }
 
 .mine {
-  background: var(--color-mine);
+  background: var(--slot-mine-surface);
+  box-shadow: inset 3px 0 0 var(--slot-mine-border);
+}
+
+.continues {
+  border-bottom-color: transparent;
 }
 
 .title {
-  font-size: 0.8125rem;
+  font: var(--body-medium-12);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .author {
-  font-size: 0.6875rem;
-  opacity: 0.8;
+  color: var(--text-secondary);
+  font: var(--body-regular-11);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.free {
-  font-size: 0.75rem;
-  opacity: 0.35;
+.now {
+  background: var(--slot-now-line);
+  height: 2px;
+  left: 0;
+  position: absolute;
+  right: 0;
+  z-index: 2;
+}
+
+.now::before {
+  background: var(--slot-now-line);
+  border-radius: 50%;
+  content: '';
+  height: 8px;
+  left: -3px;
+  position: absolute;
+  top: -3px;
+  width: 8px;
+}
+
+@media (max-width: bp.$mobile) {
+  .grid {
+    grid-template-columns: 3.25rem repeat(7, 7.5rem);
+    min-width: 0;
+  }
+
+  .head {
+    padding: var(--space-2);
+  }
+
+  .time {
+    padding-right: var(--space-1);
+  }
 }

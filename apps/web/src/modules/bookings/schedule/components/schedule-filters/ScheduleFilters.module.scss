@@ -1,0 +1,25 @@
+@use '../../../../../styles/breakpoints' as bp;
+
+.filters {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.room {
+  width: 15rem;
+}
+
+.capacity {
+  width: 9.5rem;
+}
+
+@media (max-width: bp.$mobile) {
+  .filters {
+    flex-direction: column;
+  }
+
+  .room,
+  .capacity {
+    width: 100%;
+  }
+}
