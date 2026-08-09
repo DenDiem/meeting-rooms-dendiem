@@ -36,6 +36,7 @@ services:
       OFFICE_OPEN_HOUR: ${OFFICE_OPEN_HOUR}
       OFFICE_CLOSE_HOUR: ${OFFICE_CLOSE_HOUR}
       WEB_BASE_URL: ${WEB_BASE_URL}
+      NOTIFY_BEFORE_MINUTES: ${NOTIFY_BEFORE_MINUTES}
     command: sh -c "npm run db:deploy -w @meeting-rooms/api && npm run start -w @meeting-rooms/api"
 
   web:

@@ -1,0 +1,55 @@
+@use '../../../../styles/breakpoints' as bp;
+
+.viewport {
+  display: grid;
+  gap: var(--space-2);
+  left: 50%;
+  margin: 0;
+  max-width: calc(100vw - var(--space-6));
+  padding: 0;
+  position: fixed;
+  top: var(--space-4);
+  transform: translateX(-50%);
+  width: 26rem;
+  z-index: var(--layer-dialog);
+}
+
+.toast {
+  align-items: start;
+  background: var(--surface-card);
+  border: 1px solid var(--notice-border);
+  border-radius: var(--radius-l);
+  box-shadow: var(--shadow-m);
+  display: grid;
+  gap: var(--space-1) var(--space-4);
+  grid-template-columns: 1fr auto;
+  padding: var(--space-4);
+}
+
+.title {
+  color: var(--text-primary);
+  font: var(--heading-semibold-16);
+}
+
+.description {
+  color: var(--text-secondary);
+  font: var(--body-regular-13);
+  grid-column: 1;
+}
+
+.close {
+  background: none;
+  border: 0;
+  color: var(--accent-default);
+  cursor: pointer;
+  font: var(--button-medium-13);
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  padding: 0;
+}
+
+@media (max-width: bp.$mobile) {
+  .viewport {
+    width: 100%;
+  }
+}

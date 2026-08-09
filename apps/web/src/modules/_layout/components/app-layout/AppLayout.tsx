@@ -7,6 +7,7 @@ import { classNames } from '@domain/services/class-names.service';
 import { toInitials } from '@domain/services/initials.service';
 import { EmailConfirmationBanner } from '@modules/auth/components/email-confirmation-banner/EmailConfirmationBanner';
 import { EmailStatus } from '@modules/auth/components/email-status/EmailStatus';
+import { NotificationToasts } from '@modules/notifications/components/notification-toasts/NotificationToasts';
 import { useGetSessionQuery, useLogoutMutation } from '@store/api/auth.api';
 
 import styles from './AppLayout.module.scss';
@@ -56,6 +57,8 @@ export const AppLayout = (): JSX.Element => {
       {user?.isEmailConfirmed === false && <EmailConfirmationBanner />}
 
       <Outlet />
+
+      <NotificationToasts />
     </div>
   );
 };
