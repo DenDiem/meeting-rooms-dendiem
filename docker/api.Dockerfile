@@ -11,9 +11,16 @@ COPY tsconfig.base.json ./
 COPY apps/api apps/api
 RUN npm run build -w @meeting-rooms/api
 
+FROM node:22-alpine AS runtime-deps
+WORKDIR /app
+COPY package.json package-lock.json ./
+COPY apps/api/package.json apps/api/package.json
+COPY apps/web/package.json apps/web/package.json
+RUN npm ci --omit=dev
+
 FROM node:22-alpine AS runtime
 WORKDIR /app
-COPY --from=build /app/node_modules node_modules
+COPY --from=runtime-deps /app/node_modules node_modules
 COPY --from=build /app/package.json package.json
 COPY --from=build /app/apps/api/package.json apps/api/package.json
 COPY --from=build /app/apps/api/prisma.config.ts apps/api/prisma.config.ts
