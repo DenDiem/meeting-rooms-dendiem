@@ -1,6 +1,10 @@
 import type { JSX } from 'react';
 import { NavLink, Outlet } from 'react-router';
 
+import { Button } from '@components/actions/button/Button';
+import { BrandMark } from '@components/branding/brand-mark/BrandMark';
+import { classNames } from '@domain/services/class-names.service';
+import { toInitials } from '@domain/services/initials.service';
 import { useGetSessionQuery, useLogoutMutation } from '@store/api/auth.api';
 
 import styles from './AppLayout.module.scss';
@@ -10,16 +14,41 @@ export const AppLayout = (): JSX.Element => {
   const [logout, { isLoading }] = useLogoutMutation();
 
   return (
-    <div>
-      <nav className={styles.nav}>
-        <NavLink to="/schedule">Schedule</NavLink>
-        <NavLink to="/my-bookings">My bookings</NavLink>
+    <div className={styles.layout}>
+      <header className={styles.header}>
+        <span className={styles.brand}>
+          <BrandMark className={styles.mark} />
+          <span className={styles.wordmark}>Meeting Rooms</span>
+        </span>
 
-        <span className={styles.user}>{user?.name}</span>
-        <button type="button" onClick={() => void logout()} disabled={isLoading}>
+        <nav className={styles.nav}>
+          <NavLink
+            to="/schedule"
+            className={({ isActive }) => classNames(styles.link, isActive && styles.linkActive)}
+          >
+            Schedule
+          </NavLink>
+          <NavLink
+            to="/my-bookings"
+            className={({ isActive }) => classNames(styles.link, isActive && styles.linkActive)}
+          >
+            My bookings
+          </NavLink>
+        </nav>
+
+        <span className={styles.spacer} />
+
+        {user && (
+          <span className={styles.user}>
+            <span className={styles.avatar}>{toInitials(user.name)}</span>
+            <span className={styles.name}>{user.name}</span>
+          </span>
+        )}
+
+        <Button variant="ghost" size="small" onClick={() => void logout()} disabled={isLoading}>
           Sign out
-        </button>
-      </nav>
+        </Button>
+      </header>
 
       <Outlet />
     </div>
