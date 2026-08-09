@@ -26,6 +26,10 @@ server: `docker compose logs api | grep "Confirmation link"`.
 2 шари перевірки, перша на рівні апі шукає чи немає часом перетинів в існуючій базі, і другий шар
 констрейнт в самому постгресі який прямо не дозволяє два записи які перетинаються
 
+Другий шар потрібен саме через одночасні запити: двоє можуть прочитати той самий вільний слот
+раніше, ніж хтось із них запише, і перша перевірка цього не спіймає. Гонку зупиняє констрейнт — той,
+хто програв, отримує 409.
+
 ## Як зберігається час
 
 У базі ts в ютс форматі, також я зберігаю часовий пояс роботи офісу щоб правильно перетворювати ютс
@@ -45,4 +49,14 @@ server: `docker compose logs api | grep "Confirmation link"`.
 
 ## Tests
 
-`npm test` — unit tests for the domain rules, integration tests against a real PostgreSQL.
+```bash
+npm ci
+npm test
+```
+
+`npm test` covers the domain rules and needs no database. The integration tests do need one, so they
+run separately against the database from `docker compose`:
+
+```bash
+npm run test:integration -w @meeting-rooms/api
+```

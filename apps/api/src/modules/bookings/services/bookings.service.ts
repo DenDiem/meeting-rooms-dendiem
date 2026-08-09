@@ -13,6 +13,7 @@ import { RoomsService } from '@modules/rooms/services/rooms.service';
 
 import {
   BOOKING_ALREADY_CANCELED_MESSAGE,
+  BOOKING_ALREADY_ENDED_MESSAGE,
   BOOKING_NOT_FOUND_MESSAGE,
   BOOKING_NOT_YOURS_MESSAGE,
   SERIES_ALREADY_CANCELED_MESSAGE,
@@ -160,7 +161,13 @@ export class BookingsService {
       throw new ConflictException(BOOKING_ALREADY_CANCELED_MESSAGE);
     }
 
-    await this.bookingRepository.cancel(id, new Date());
+    const now = new Date();
+
+    if (booking.endsAt <= now) {
+      throw new ConflictException(BOOKING_ALREADY_ENDED_MESSAGE);
+    }
+
+    await this.bookingRepository.cancel(id, now);
   }
 
   private ensureEveryOccurrenceIsBookable(occurrences: readonly IntervalDto[]): void {

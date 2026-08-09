@@ -13,6 +13,7 @@ export const LISTED_CONFLICTS_LIMIT = 3;
 export const BOOKING_NOT_FOUND_MESSAGE = 'Booking not found.';
 export const BOOKING_NOT_YOURS_MESSAGE = 'You can only cancel your own bookings.';
 export const BOOKING_ALREADY_CANCELED_MESSAGE = 'This booking is already canceled.';
+export const BOOKING_ALREADY_ENDED_MESSAGE = 'This booking has already ended.';
 export const SLOT_ALREADY_BOOKED_MESSAGE = 'This room is already booked for that time.';
 export const SLOT_TAKEN_MESSAGE = 'This slot has just been taken. Refresh the schedule.';
 
