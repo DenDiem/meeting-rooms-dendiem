@@ -1,15 +1,19 @@
 import type { JSX } from 'react';
 import { Link } from 'react-router';
 
+import { AuthCard } from '../../components/auth-card/AuthCard';
 import { LoginForm } from '../../components/login-form/LoginForm';
-import styles from './LoginPage.module.scss';
 
 export const LoginPage = (): JSX.Element => (
-  <main className={styles.page}>
-    <h1>Sign in</h1>
+  <AuthCard
+    title="Sign in"
+    subtitle="Book a meeting room in a couple of clicks"
+    footer={
+      <>
+        No account yet? <Link to="/register">Create one</Link>
+      </>
+    }
+  >
     <LoginForm />
-    <p>
-      No account yet? <Link to="/register">Create one</Link>
-    </p>
-  </main>
+  </AuthCard>
 );
