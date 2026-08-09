@@ -34,6 +34,15 @@ export const authApi = baseApi.injectEndpoints({
       invalidatesTags: ['Session', 'Room', 'Schedule', 'MyBookings'],
     }),
 
+    confirmEmail: builder.mutation<SessionUser, string>({
+      query: (token) => ({ url: '/auth/confirm-email', method: 'POST', body: { token } }),
+      invalidatesTags: ['Session'],
+    }),
+
+    resendConfirmation: builder.mutation<void, void>({
+      query: () => ({ url: '/auth/confirm-email/resend', method: 'POST' }),
+    }),
+
     logout: builder.mutation<void, void>({
       query: () => ({ url: '/auth/logout', method: 'POST' }),
       invalidatesTags: ['Session', 'Room', 'Schedule', 'MyBookings'],
@@ -41,5 +50,11 @@ export const authApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useGetSessionQuery, useLoginMutation, useRegisterMutation, useLogoutMutation } =
-  authApi;
+export const {
+  useGetSessionQuery,
+  useLoginMutation,
+  useRegisterMutation,
+  useConfirmEmailMutation,
+  useResendConfirmationMutation,
+  useLogoutMutation,
+} = authApi;

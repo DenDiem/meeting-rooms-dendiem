@@ -15,6 +15,7 @@ import {
 import { ZodValidationPipe } from '@common/pipes/zod-validation.pipe';
 import type { Paginated } from '@common/resources/paginated';
 import { CurrentUser } from '@modules/auth/decorators/current-user.decorator';
+import { ConfirmedEmailGuard } from '@modules/auth/guards/confirmed-email.guard';
 import { SessionGuard } from '@modules/auth/guards/session.guard';
 import type { PublicUserResource } from '@modules/auth/resources/public-user.resource';
 
@@ -33,6 +34,7 @@ export class BookingsController {
   constructor(private readonly bookingsService: BookingsService) {}
 
   @Post()
+  @UseGuards(ConfirmedEmailGuard)
   public create(
     @Body(new ZodValidationPipe(createBookingRequestSchema)) dto: CreateBookingDto,
     @CurrentUser() user: PublicUserResource,

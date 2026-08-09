@@ -7,4 +7,12 @@ export const toUserModel = ({
   email,
   emailNormalized,
   passwordHash,
-}: User): UserModel => ({ id, name, email, emailNormalized, passwordHash });
+  emailConfirmedAt,
+}: User): UserModel => ({
+  id,
+  name,
+  email,
+  emailNormalized,
+  passwordHash,
+  emailConfirmedAt,
+});

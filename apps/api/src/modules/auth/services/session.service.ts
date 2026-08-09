@@ -3,7 +3,7 @@ import type { Request } from 'express';
 
 import { MILLISECONDS_PER_DAY } from '@common/constants/time.constants';
 
-import { createSessionToken, hashSessionToken } from '../helpers/session-token';
+import { createToken, hashToken } from '../helpers/token';
 import { SESSION_CONFIG, type SessionConfig } from '../interfaces/session-config.interface';
 import {
   SESSION_REPOSITORY,
@@ -25,11 +25,11 @@ export class SessionService {
   }
 
   public async start(userId: PublicUserResource['id']): Promise<string> {
-    const token = createSessionToken();
+    const token = createToken();
 
     await this.sessionRepository.create({
       userId,
-      tokenHash: hashSessionToken(token),
+      tokenHash: hashToken(token),
       expiresAt: new Date(Date.now() + this.ttlDays * MILLISECONDS_PER_DAY),
     });
 
@@ -44,7 +44,7 @@ export class SessionService {
     }
 
     const session = await this.sessionRepository.findActiveByTokenHash(
-      hashSessionToken(token),
+      hashToken(token),
       new Date(),
     );
 
@@ -55,7 +55,7 @@ export class SessionService {
     const token = this.sessionCookieService.read(request);
 
     if (token) {
-      await this.sessionRepository.revokeByTokenHash(hashSessionToken(token), new Date());
+      await this.sessionRepository.revokeByTokenHash(hashToken(token), new Date());
     }
   }
 }

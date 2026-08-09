@@ -4,4 +4,5 @@ export interface UserModel {
   readonly email: string;
   readonly emailNormalized: string;
   readonly passwordHash: string;
+  readonly emailConfirmedAt: Date | null;
 }

@@ -8,10 +8,14 @@ import { EmailAlreadyTakenException } from '../exceptions/email-already-taken.ex
 import { normalizeEmail } from '../helpers/normalize-email';
 import { USER_REPOSITORY, type UserRepository } from '../interfaces/user-repository.interface';
 import { toPublicUserResource, type PublicUserResource } from '../resources/public-user.resource';
+import { EmailConfirmationService } from './email-confirmation.service';
 
 @Injectable()
 export class AuthService {
-  constructor(@Inject(USER_REPOSITORY) private readonly userRepository: UserRepository) {}
+  constructor(
+    @Inject(USER_REPOSITORY) private readonly userRepository: UserRepository,
+    private readonly emailConfirmationService: EmailConfirmationService,
+  ) {}
 
   public async register({ name, email, password }: RegisterDto): Promise<PublicUserResource> {
     try {
@@ -22,7 +26,11 @@ export class AuthService {
         passwordHash: await hash(password, PASSWORD_SALT_ROUNDS),
       });
 
-      return toPublicUserResource(user);
+      const publicUser = toPublicUserResource(user);
+
+      await this.emailConfirmationService.issue(publicUser);
+
+      return publicUser;
     } catch (error) {
       if (error instanceof EmailAlreadyTakenException) {
         throw new ConflictException({
