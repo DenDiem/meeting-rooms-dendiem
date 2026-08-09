@@ -32,6 +32,17 @@ server: `docker compose logs api | grep "Confirmation link"`.
 в нього, сітка малюється в часовому поясі користувача але час на який він забронюється буде все
 рівно в часи роботи офісу
 
+## Extras
+
+- `docker compose up` brings the database, the API and the client up together
+- email confirmation in development: the link goes to the API log, and booking needs a confirmed address
+- weekly recurring bookings, cancellable as one occurrence or as the whole series
+- race protection, described above
+- an in-app warning `NOTIFY_BEFORE_MINUTES` before a booking ends when the room is taken right after; it arrives once and never for a cancelled booking
+- integration tests for overlaps and for the booking lifecycle
+- rooms filtered by capacity
+- the grid is usable on a phone
+
 ## Tests
 
 `npm test` — unit tests for the domain rules, integration tests against a real PostgreSQL.
