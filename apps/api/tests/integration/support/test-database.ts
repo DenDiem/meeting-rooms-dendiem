@@ -3,6 +3,12 @@ import { config } from 'dotenv';
 
 import { PrismaService } from '@database/prisma.service';
 import { PrismaBookingRepository } from '@modules/bookings/repositories/prisma-booking.repository';
+import { BookingsService } from '@modules/bookings/services/bookings.service';
+import { OfficeHoursService } from '@modules/office/services/office-hours.service';
+import { PrismaRoomRepository } from '@modules/rooms/repositories/prisma-room.repository';
+import { RoomsService } from '@modules/rooms/services/rooms.service';
+
+import { KYIV_OFFICE } from '../../support/office-hours.constants';
 
 export const TEST_FIXTURE_PREFIX = 'integration-test-';
 
@@ -20,6 +26,19 @@ export const connectTestDatabase = (): PrismaService => {
 
 export const createBookingRepository = (prisma: PrismaService): PrismaBookingRepository =>
   new PrismaBookingRepository(prisma);
+
+export const createBookingsService = (prisma: PrismaService): BookingsService =>
+  new BookingsService(
+    createBookingRepository(prisma),
+    new OfficeHoursService(
+      new ConfigService({
+        OFFICE_TIMEZONE: KYIV_OFFICE.timeZone,
+        OFFICE_OPEN_HOUR: KYIV_OFFICE.openHour,
+        OFFICE_CLOSE_HOUR: KYIV_OFFICE.closeHour,
+      }),
+    ),
+    new RoomsService(new PrismaRoomRepository(prisma)),
+  );
 
 export const removeFixtures = async (prisma: PrismaService): Promise<void> => {
   await prisma.booking.deleteMany({ where: { title: { startsWith: TEST_FIXTURE_PREFIX } } });
