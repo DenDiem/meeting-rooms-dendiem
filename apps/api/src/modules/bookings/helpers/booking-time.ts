@@ -1,10 +1,11 @@
+import type { OfficeHoursDto } from '@modules/office/dto/office-hours.dto';
+
 import {
   MAX_BOOKING_MINUTES,
   MIN_BOOKING_MINUTES,
   SLOT_MINUTES,
 } from '../constants/bookings.constants';
 import type { IntervalDto } from '../dto/interval.dto';
-import type { OfficeHoursDto } from '../dto/office-hours.dto';
 import { BookingTimeViolation } from '../enums/booking-time-violation.enum';
 import { durationInMinutes } from './interval';
 import { isSlotAligned, isWithinOfficeHours } from './office-hours';

@@ -1,4 +1,4 @@
-import type { OfficeHoursDto } from '@modules/bookings/dto/office-hours.dto';
+import type { OfficeHoursDto } from '@modules/office/dto/office-hours.dto';
 
 export const KYIV_OFFICE: OfficeHoursDto = {
   timeZone: 'Europe/Kyiv',

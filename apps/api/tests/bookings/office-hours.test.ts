@@ -103,23 +103,23 @@ describe('officeWeekOf', () => {
   it('starts the week on Monday in the office zone', () => {
     const week = officeWeekOf('2026-09-16', KYIV_OFFICE);
 
-    expect(week?.start.toISOString()).toBe('2026-09-13T21:00:00.000Z');
+    expect(week.start.toISOString()).toBe('2026-09-13T21:00:00.000Z');
   });
 
   it('spans seven days', () => {
     const week = officeWeekOf('2026-09-16', KYIV_OFFICE);
 
-    expect(week?.end.toISOString()).toBe('2026-09-20T21:00:00.000Z');
+    expect(week.end.toISOString()).toBe('2026-09-20T21:00:00.000Z');
   });
 
   it('returns the same week for every day inside it', () => {
     const monday = officeWeekOf('2026-09-14', KYIV_OFFICE);
     const sunday = officeWeekOf('2026-09-20', KYIV_OFFICE);
 
-    expect(monday?.start.toISOString()).toBe(sunday?.start.toISOString());
+    expect(monday.start.toISOString()).toBe(sunday.start.toISOString());
   });
 
-  it('rejects a date it cannot read', () => {
-    expect(officeWeekOf('last monday', KYIV_OFFICE)).toBeNull();
+  it('refuses to guess an unknown zone', () => {
+    expect(() => officeWeekOf('2026-09-16', UNKNOWN_OFFICE)).toThrow(UNKNOWN_OFFICE.timeZone);
   });
 });

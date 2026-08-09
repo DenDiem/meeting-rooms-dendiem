@@ -8,14 +8,14 @@ import {
 } from '@nestjs/common';
 
 import { Paginated } from '@common/resources/paginated';
+import { OfficeHoursService } from '@modules/office/services/office-hours.service';
 import { RoomsService } from '@modules/rooms/services/rooms.service';
 
 import {
   BOOKING_ALREADY_CANCELED_MESSAGE,
   BOOKING_NOT_FOUND_MESSAGE,
   BOOKING_NOT_YOURS_MESSAGE,
-  INVALID_WEEK_MESSAGE,
-  SLOT_TAKEN_MESSAGE,
+  SLOT_ALREADY_BOOKED_MESSAGE,
 } from '../constants/bookings.constants';
 import type { CreateBookingDto } from '../dto/create-booking.dto';
 import type { MyBookingsDto } from '../dto/my-bookings.dto';
@@ -30,7 +30,6 @@ import {
 } from '../interfaces/booking-repository.interface';
 import type { BookingModel } from '../models/booking.model';
 import { toBookingResource, type BookingResource } from '../resources/booking.resource';
-import { OfficeHoursService } from './office-hours.service';
 
 @Injectable()
 export class BookingsService {
@@ -44,7 +43,7 @@ export class BookingsService {
     { roomId, title, startsAt, endsAt }: CreateBookingDto,
     userId: string,
   ): Promise<BookingResource> {
-    await this.roomsService.getById(roomId);
+    await this.roomsService.ensureExists(roomId);
 
     const interval = { start: startsAt, end: endsAt };
     const violation = findBookingTimeViolation(interval, this.officeHoursService.hours, new Date());
@@ -56,7 +55,7 @@ export class BookingsService {
     }
 
     if (await this.bookingRepository.findFirst({ roomId, overlapping: interval })) {
-      throw new ConflictException(SLOT_TAKEN_MESSAGE);
+      throw new ConflictException(SLOT_ALREADY_BOOKED_MESSAGE);
     }
 
     try {
@@ -100,14 +99,9 @@ export class BookingsService {
     { roomId, week }: WeekScheduleDto,
     userId: string,
   ): Promise<BookingResource[]> {
-    await this.roomsService.getById(roomId);
+    await this.roomsService.ensureExists(roomId);
 
     const range = officeWeekOf(week, this.officeHoursService.hours);
-
-    if (!range) {
-      throw new BadRequestException(INVALID_WEEK_MESSAGE);
-    }
-
     const bookings = await this.bookingRepository.findMany({ roomId, overlapping: range }, 'asc');
 
     return bookings.map((booking) => toBookingResource(booking, userId));
