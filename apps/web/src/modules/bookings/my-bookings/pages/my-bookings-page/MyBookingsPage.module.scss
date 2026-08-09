@@ -92,6 +92,15 @@
   font: var(--body-regular-14);
 }
 
+.badge {
+  background: var(--accent-soft);
+  border-radius: var(--radius-pill);
+  color: var(--accent-default);
+  font: var(--body-medium-12);
+  margin-left: var(--space-2);
+  padding: 0 var(--space-2);
+}
+
 .room {
   color: var(--text-secondary);
   font: var(--body-regular-12);

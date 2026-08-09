@@ -19,9 +19,11 @@ import { ConfirmedEmailGuard } from '@modules/auth/guards/confirmed-email.guard'
 import { SessionGuard } from '@modules/auth/guards/session.guard';
 import type { PublicUserResource } from '@modules/auth/resources/public-user.resource';
 
+import type { CreateBookingSeriesDto } from '../dto/create-booking-series.dto';
 import type { CreateBookingDto } from '../dto/create-booking.dto';
 import type { MyBookingsDto } from '../dto/my-bookings.dto';
 import type { WeekScheduleDto } from '../dto/week-schedule.dto';
+import { createBookingSeriesRequestSchema } from '../requests/create-booking-series.request';
 import { createBookingRequestSchema } from '../requests/create-booking.request';
 import { myBookingsRequestSchema } from '../requests/my-bookings.request';
 import { weekScheduleRequestSchema } from '../requests/week-schedule.request';
@@ -40,6 +42,24 @@ export class BookingsController {
     @CurrentUser() user: PublicUserResource,
   ): Promise<BookingResource> {
     return this.bookingsService.create(dto, user.id);
+  }
+
+  @Post('series')
+  @UseGuards(ConfirmedEmailGuard)
+  public createSeries(
+    @Body(new ZodValidationPipe(createBookingSeriesRequestSchema)) dto: CreateBookingSeriesDto,
+    @CurrentUser() user: PublicUserResource,
+  ): Promise<BookingResource[]> {
+    return this.bookingsService.createSeries(dto, user.id);
+  }
+
+  @Delete('series/:seriesId')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  public cancelSeries(
+    @Param('seriesId', ParseUUIDPipe) seriesId: string,
+    @CurrentUser() user: PublicUserResource,
+  ): Promise<void> {
+    return this.bookingsService.cancelSeries(seriesId, user.id);
   }
 
   @Get('schedule')

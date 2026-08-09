@@ -6,6 +6,7 @@ export interface BookingModel {
   readonly startsAt: Date;
   readonly endsAt: Date;
   readonly canceledAt: Date | null;
+  readonly seriesId: string | null;
 }
 
 export interface BookingDetailsModel extends BookingModel {

@@ -105,7 +105,10 @@ export const MyBookingsPage = (): JSX.Element => {
               </div>
 
               <div className={styles.main}>
-                <span className={styles.name}>{booking.title}</span>
+                <span className={styles.name}>
+                  {booking.title}
+                  {booking.seriesId !== null && <span className={styles.badge}>Weekly</span>}
+                </span>
                 <span className={styles.room}>{booking.room.name}</span>
               </div>
 
