@@ -18,6 +18,7 @@ import {
   formatLocalDate,
   formatLocalTime,
   isOfficeZoneDifferent,
+  officeWeekDateOf,
 } from '../../../services/booking-format.service';
 import styles from './MyBookingsPage.module.scss';
 
@@ -38,7 +39,13 @@ export const MyBookingsPage = (): JSX.Element => {
   const lastPage = Math.max(1, Math.ceil((bookings.data?.total ?? 0) / pageSize));
 
   const openInSchedule = (booking: Booking): void => {
-    void navigate(`/schedule?roomId=${booking.room.id}&week=${booking.startsAt.slice(0, 10)}`);
+    if (office.data === undefined) {
+      return;
+    }
+
+    const week = officeWeekDateOf(new Date(booking.startsAt), office.data);
+
+    void navigate(`/schedule?roomId=${booking.room.id}&week=${week}`);
   };
 
   return (
@@ -96,7 +103,7 @@ export const MyBookingsPage = (): JSX.Element => {
           const endsAt = new Date(booking.endsAt);
 
           return (
-            <li key={booking.id} className={styles.item}>
+            <li key={booking.id} className={styles.item} onClick={() => openInSchedule(booking)}>
               <div className={styles.when}>
                 <span className={styles.date}>{formatLocalDate(startsAt)}</span>
                 <span className={styles.time}>
@@ -114,10 +121,7 @@ export const MyBookingsPage = (): JSX.Element => {
 
               <span className={styles.spacer} />
 
-              <div className={styles.actions}>
-                <Button variant="ghost" size="small" onClick={() => openInSchedule(booking)}>
-                  Open in schedule
-                </Button>
+              <div className={styles.actions} onClick={(event) => event.stopPropagation()}>
                 {scope === BookingScope.Upcoming && (
                   <Button variant="danger" size="small" onClick={() => setBookingToCancel(booking)}>
                     Cancel

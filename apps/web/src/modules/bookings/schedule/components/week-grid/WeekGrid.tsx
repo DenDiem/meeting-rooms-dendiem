@@ -15,6 +15,7 @@ import { formatLocalTime } from '../../../services/booking-format.service';
 import { officeDaySlots, officeWeekDays } from '../../services/week.service';
 import { buildWeekRows } from '../../services/week-grid.service';
 import type { SlotSelection, WeekCell, WeekSlot } from '../../types/week.types';
+import { NOW_TICK_INTERVAL_MS } from './week-grid.constants';
 import styles from './WeekGrid.module.scss';
 
 interface WeekGridProps {
@@ -44,10 +45,16 @@ export const WeekGrid = ({
   onSelectBooking,
 }: WeekGridProps): JSX.Element => {
   const [selection, setSelection] = useState<SlotSelection | null>(null);
+  const [now, setNow] = useState(() => new Date());
+
+  useEffect(() => {
+    const ticker = setInterval(() => setNow(new Date()), NOW_TICK_INTERVAL_MS);
+
+    return () => clearInterval(ticker);
+  }, []);
 
   const days = officeWeekDays(week, officeHours);
   const weekSlots = days.map((day) => officeDaySlots(day.date, officeHours));
-  const now = new Date();
   const rows = buildWeekRows(weekSlots, bookings, now);
 
   const selectedDaySlots = selection === null ? undefined : weekSlots[selection.dayIndex];

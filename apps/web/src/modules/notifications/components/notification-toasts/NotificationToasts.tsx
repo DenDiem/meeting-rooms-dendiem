@@ -7,7 +7,10 @@ import {
   useMarkNotificationReadMutation,
 } from '@store/api/notification.api';
 
-import { NOTIFICATION_POLL_INTERVAL_MS } from './notification-toasts.constants';
+import {
+  NOTIFICATION_POLL_INTERVAL_MS,
+  NOTIFICATION_TOAST_DURATION_MS,
+} from './notification-toasts.constants';
 import styles from './NotificationToasts.module.scss';
 
 export const NotificationToasts = (): JSX.Element => {
@@ -17,7 +20,7 @@ export const NotificationToasts = (): JSX.Element => {
   const [markRead] = useMarkNotificationReadMutation();
 
   return (
-    <RadixToast.Provider duration={Number.POSITIVE_INFINITY} swipeDirection="right">
+    <RadixToast.Provider duration={NOTIFICATION_TOAST_DURATION_MS} swipeDirection="right">
       {notifications?.map((notification) => (
         <RadixToast.Root
           key={notification.id}
